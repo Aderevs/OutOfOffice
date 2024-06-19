@@ -1,4 +1,5 @@
 using OutOfOffice.DbLogic;
+using OutOfOffice.DbLogic.Repositories;
 
 namespace OutOfOffice
 {
@@ -15,6 +16,8 @@ namespace OutOfOffice
                 var connectionString = builder.Configuration["ConnectionString"];
                 return new OutOfOfficeDbContext(connectionString);
             });
+
+            builder.Services.AddScoped<EmployeesRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

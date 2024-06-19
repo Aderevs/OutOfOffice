@@ -6,11 +6,16 @@
     }
     public enum Position
     {
-
+        Employee,
+        HRManager,
+        ProjectManager,
+        Administrator
     }
     public class Employee
     {
         public int ID { get; init; }
+        public string PasswordHash { get; set; }
+        public Guid Salt { get; set; }
         public string FullName { get; set; }
         public Subdivision Subdivision { get; set; }
         public Position Position { get; set; }
