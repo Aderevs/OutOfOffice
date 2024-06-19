@@ -1,3 +1,5 @@
+using OutOfOffice.DbLogic;
+
 namespace OutOfOffice
 {
     public class Program
@@ -8,7 +10,11 @@ namespace OutOfOffice
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddScoped(provider =>
+            {
+                var connectionString = builder.Configuration["ConnectionString"];
+                return new OutOfOfficeDbContext(connectionString);
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
