@@ -61,6 +61,7 @@ namespace OutOfOffice.Controllers
             {
                 new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.NameIdentifier, user.ID.ToString())
             };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);

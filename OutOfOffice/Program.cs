@@ -21,6 +21,7 @@ namespace OutOfOffice
                 cfg.AddProfile<ModelProfile>();
             });
             builder.Services.AddScoped<EmployeesRepository>();
+            builder.Services.AddScoped<LeaveRequestsRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

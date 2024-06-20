@@ -10,7 +10,7 @@ namespace OutOfOffice.DbLogic.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<Employee>> GetAllEmployees()
+        public async Task<IEnumerable<Employee>> GetAllAsync()
         {
             return await _context.Employees.ToListAsync();
         }

@@ -1,29 +1,93 @@
-﻿@model List<LeaveRequestView> 
+﻿@model List<LeaveRequestView>
 
 @{
     ViewData["Title"] = "Leave requests";
+    var requestsJson = System.Text.Json.JsonSerializer.Serialize(Model);
+
 }
 
 
 <table>
-    <thead>
+    <thead id="leaverequests-table-head">
         <tr>
-            <th>ID</th>
-            <th>Reason</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Status</th>
+            <th><button onclick="sortById()">ID</button></th>
+            <th><button onclick="sortByReason()">Reason</button></th>
+            <th><button onclick="sortByStartDate()">Start</button></th>
+            <th><button onclick="sortByEndDate()">End</button></th>
+            <th><button onclick="sortByStatus()">Status</button></th>
         </tr>
     </thead>
-    @foreach(var request in Model)
-    {
-        <tr>
-            <td>@request.ID</td>
-            <td>@request.AbsenceReason</td>
-            <td>@request.StartDate</td>
-            <td>@request.EndDate</td>
-            <td>@request.Status</td>
-        </tr>
-    }
+    <tbody id="leaverequests-table-body"></tbody>
 </table>
+<script>
+    let requests = @Html.Raw(requestsJson);
+    let tableBody = document.getElementById("leaverequests-table-body");
+    let currentSorting = "IDAscending";
 
+    function displayTableBody() {
+        tableBody.innerHTML = "";
+        requests.ForEach(request => {
+            let row += document.createElement("tr");
+            row.innerHTML = `<td>${request.ID}</td><td>${request.AbsenceReason}</td><td>${request.StartDate}</td><td>${request.EndDate}</td><td>${request.Status}</td>`;
+            tableBody.appendChild(row);
+        });
+    }
+    
+    displayTableBody();
+    
+    function sortById() {
+        if (currentSorting === "IDAscending") {
+            currentSorting = "IDDescending";
+            requests.sort((a, b) => b.ID - a.ID);
+        } else {
+            currentSorting = "IDAscending";
+            requests.sort((a, b) => a.ID - b.ID);
+        }
+        displayTableBody();
+    }
+
+    function sortByReason() {
+        if (currentSorting === "ReasonAscending") {
+            currentSorting = "ReasonDescending";
+            requests.sort((a, b) => b.AbsenceReason - a.AbsenceReason);
+        } else {
+            currentSorting = "ReasonAscending";
+            requests.sort((a, b) => a.AbsenceReason - b.AbsenceReason);
+        }
+        displayTableBody();
+    }
+
+    function sortByStartDate() {
+        if (currentSorting === "StartAscending") {
+            currentSorting = "StartDescending";
+            requests.sort((a, b) => b.StartDate - a.StartDate);
+        } else {
+            currentSorting = "StartAscending";
+            requests.sort((a, b) => a.StartDate - b.StartDate);
+        }
+        displayTableBody();
+    }
+
+    function sortByEndDate() {
+        if (currentSorting === "EndAscending") {
+            currentSorting = "EndDescending";
+            requests.sort((a, b) => b.EndDate - a.EndDate);
+        } else {
+            currentSorting = "EndAscending";
+            requests.sort((a, b) => a.EndDate - b.EndDate);
+        }
+        displayTableBody();
+    }
+
+    function sortByStatus() {
+        if (currentSorting === "StatusAscending") {
+            currentSorting = "StatusDescending";
+            requests.sort((a, b) => b.Status - a.Status);
+        } else {
+            currentSorting = 'StatusAscending';
+            requests.sort((a, b) => a.Status - b.Status);
+        }
+        displayTableBody();
+    }
+
+</script>
