@@ -27,8 +27,14 @@
     function displayTableBody() {
         tableBody.innerHTML = "";
         requests.ForEach(request => {
-            let row += document.createElement("tr");
-            row.innerHTML = `<td>${request.ID}</td><td>${request.AbsenceReason}</td><td>${request.StartDate}</td><td>${request.EndDate}</td><td>${request.Status}</td>`;
+            let row = document.createElement("tr");
+            row.innerHTML = 
+            `<td>${request.ID}</td>
+            <td>${request.AbsenceReason}</td>
+            <td>${request.StartDate}</td>
+            <td>${request.EndDate}</td>
+            <td>${request.Status}</td>
+            <td><a href="localhost:7129/LeaveRequests/EditRequest?id=${request.ID}>Details / Update</a>"</td>`;
             tableBody.appendChild(row);
         });
     }

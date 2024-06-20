@@ -2,11 +2,17 @@
 {
     public enum AbsenceReason
     {
-
+        Disease,
+        Vacation,
+        FamilyCircumstances,
+        Education,
+        OtherInComment
     }
     public enum Status
     {
-
+        New,
+        Submit,
+        Cancel
     }
     public class LeaveRequest
     {
@@ -17,7 +23,7 @@
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
         public string? Comment { get; set; }
-        public Status Status { get; init; }
+        public Status Status { get; init; } = Status.New;
         public ApprovalRequest? ApprovalRequest { get; set; }
     }
 }

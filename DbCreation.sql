@@ -12,7 +12,7 @@ CREATE TABLE Employees(
 	  FullName VARCHAR(100) NOT NULL UNIQUE,
 	  Subdivision INT NOT NULL,
 	  Position INT NOT NULL,
-	  [Status] BIT NOT NULL,
+	  IsActive BIT NOT NULL,
 	  PeoplePartneId INT NOT NULL UNIQUE FOREIGN KEY REFERENCES Employees(ID),
 	  OutOfOfficeBalance INT NOT NULL,
 	  Photo VARBINARY(MAX) NULL

@@ -19,7 +19,7 @@
         public string FullName { get; set; }
         public Subdivision Subdivision { get; set; }
         public Position Position { get; set; }
-        public bool Status { get; set; }
+        public bool IsActive { get; set; }
         public int PeoplePartnerId { get; set; }
         public Employee? PeoplePartner { get; set; }
         public int OutOfOfficeBalance { get; set; }

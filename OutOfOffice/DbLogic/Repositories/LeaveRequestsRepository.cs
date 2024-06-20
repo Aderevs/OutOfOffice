@@ -14,11 +14,17 @@ namespace OutOfOffice.DbLogic.Repositories
         {
             return await _context.LeaveRequests.ToListAsync();
         }
-        public async Task<IEnumerable<LeaveRequest>> GetAllByEmployeeId(int id)
+        public async Task<IEnumerable<LeaveRequest>> GetAllByEmployeeId(int EmployeeId)
         {
             return await _context.LeaveRequests
-                .Where(x => x.EmployeeId == id)
+                .Where(x => x.EmployeeId == EmployeeId)
                 .ToListAsync();
+        }
+        public async Task<LeaveRequest> GetByIdOrDefaultAsync(int requestId)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return await _context.LeaveRequests.FindAsync(requestId);
+#pragma warning restore CS8603 // Possible null reference return.
         }
     }
 }

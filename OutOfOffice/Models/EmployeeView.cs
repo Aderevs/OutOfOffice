@@ -8,7 +8,7 @@ namespace OutOfOffice.Models
         public string FullName { get; set; }
         public Subdivision Subdivision { get; set; }
         public Position Position { get; set; }
-        public bool Status { get; set; }
+        public bool IsActive { get; set; }
         public EmployeeView? PeoplePartner { get; set; }
         public int OutOfOfficeBalance { get; set; }
         public byte[]? Photo { get; set; }

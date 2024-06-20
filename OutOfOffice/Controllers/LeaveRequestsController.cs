@@ -31,5 +31,16 @@ namespace OutOfOffice.Controllers
             }
             return View();
         }
+
+        public async Task<IActionResult> EditRequest([FromQuery] int id)
+        {
+            var requestDb = _repository.GetByIdOrDefaultAsync(id);
+            if (requestDb == null)
+            {
+                throw new ArgumentException("No leave request with such id was found");
+            }
+            var request = _mapper.Map<LeaveRequestView>(requestDb);
+            return View(request);
+        }
     }
 }
