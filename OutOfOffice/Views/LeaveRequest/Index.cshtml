@@ -1,0 +1,29 @@
+﻿@model List<LeaveRequestView> 
+
+@{
+    ViewData["Title"] = "Leave requests";
+}
+
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Reason</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    @foreach(var request in Model)
+    {
+        <tr>
+            <td>@request.ID</td>
+            <td>@request.AbsenceReason</td>
+            <td>@request.StartDate</td>
+            <td>@request.EndDate</td>
+            <td>@request.Status</td>
+        </tr>
+    }
+</table>
+

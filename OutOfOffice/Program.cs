@@ -16,7 +16,10 @@ namespace OutOfOffice
                 var connectionString = builder.Configuration["ConnectionString"];
                 return new OutOfOfficeDbContext(connectionString);
             });
-
+            builder.Services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<ModelProfile>();
+            });
             builder.Services.AddScoped<EmployeesRepository>();
             var app = builder.Build();
 
