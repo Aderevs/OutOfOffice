@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OutOfOffice.DbLogic;
 using OutOfOffice.DbLogic.Repositories;
 using OutOfOffice.Models;
 using System.Security.Claims;
@@ -10,13 +11,23 @@ namespace OutOfOffice.Controllers
     [Authorize]
     public class LeaveRequestsController : Controller
     {
-        private readonly LeaveRequestsRepository _repository;
         private readonly IMapper _mapper;
-
-        public LeaveRequestsController(LeaveRequestsRepository repository, IMapper mapper)
+        private readonly LeaveRequestsRepository _leaveRequestsRepository;
+        private readonly EmployeesRepository _employeesRepository;
+        private readonly ApprovalRequestsRepository _approvalRequestsRepository;
+        private readonly LeaveRequestDateValidator _dateValidator;
+        public LeaveRequestsController(
+            IMapper mapper,
+            LeaveRequestsRepository leaveRequestsRepository,
+            EmployeesRepository employeesRepository,
+            ApprovalRequestsRepository approvalRequestsRepository,
+            LeaveRequestDateValidator dateValidator)
         {
-            _repository = repository;
+            _leaveRequestsRepository = leaveRequestsRepository;
             _mapper = mapper;
+            _dateValidator = dateValidator;
+            _employeesRepository = employeesRepository;
+            _approvalRequestsRepository = approvalRequestsRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -24,7 +35,7 @@ namespace OutOfOffice.Controllers
             List<LeaveRequestView> leaveRequests;
             if (User.IsInRole("Employee"))
             {
-                var leaveRequestsDb = await _repository
+                var leaveRequestsDb = await _leaveRequestsRepository
                     .GetAllByEmployeeId(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
                 leaveRequests = _mapper.Map<List<LeaveRequestView>>(leaveRequestsDb);
                 return View(leaveRequests);
@@ -34,13 +45,94 @@ namespace OutOfOffice.Controllers
 
         public async Task<IActionResult> EditRequest([FromQuery] int id)
         {
-            var requestDb = _repository.GetByIdOrDefaultAsync(id);
+            var requestDb = await _leaveRequestsRepository.GetByIdOrDefaultAsync(id);
             if (requestDb == null)
             {
                 throw new ArgumentException("No leave request with such id was found");
             }
             var request = _mapper.Map<LeaveRequestView>(requestDb);
             return View(request);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditRequest(LeaveRequestView model)
+        {
+            var validResult = _dateValidator.Validate(model);
+            if (ModelState.IsValid && validResult.IsValid)
+            {
+                var leaveRequestDb = _mapper.Map<LeaveRequest>(model);
+                leaveRequestDb.EmployeeId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                await _leaveRequestsRepository.UpdateAsync(leaveRequestDb);
+                return View("Index");
+            }
+            else
+            {
+                foreach (var error in validResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+                return View(model);
+            }
+        }
+
+        public async Task<IActionResult> SubmitRequest(int id)
+        {
+            var requestDb = await _leaveRequestsRepository.GetByIdOrDefaultAsync(id);
+            if (requestDb == null)
+            {
+                throw new ArgumentException("No leave request with such id was found");
+            }
+            if (requestDb.Status == Status.Submit || requestDb.Status == Status.Cancel)
+            {
+                return BadRequest("Status can't submit when it's already submitted or canceled");
+            }
+
+            var employee = await _employeesRepository.GetByIdIncludeHRAndProjectsWithManagersAsync(requestDb.EmployeeId);
+            var projectManagers = employee.Projects
+                .Select(project => project.ProjectManager)
+                .Distinct()
+                .ToList();
+            var hrManager = employee.PeoplePartner;
+            List<ApprovalRequest> approvals = new List<ApprovalRequest>();
+            foreach (var projectManager in projectManagers)
+            {
+                approvals.Add(
+                    new ApprovalRequest
+                    {
+                        ApproverId = projectManager.ID,
+                        LeaveRequestId = id,
+                        Status = Status.New
+
+                    });
+            }
+            approvals.Add(
+                new ApprovalRequest
+                {
+                    ApproverId = hrManager.ID,
+                    LeaveRequestId = id,
+                    Status = Status.New
+                });
+            await _approvalRequestsRepository.AddListAsTransactionAsync(approvals);
+            requestDb.Status = Status.Submit;
+            await _leaveRequestsRepository.UpdateAsync(requestDb);
+
+            return Ok();
+        }
+        public async Task<IActionResult> CancelRequest(int id)
+        {
+            var requestDb = await _leaveRequestsRepository.GetByIdOrDefaultAsync(id);
+            if (requestDb == null)
+            {
+                throw new ArgumentException("No leave request with such id was found");
+            }
+            if(requestDb.Status == Status.Cancel)
+            {
+                return BadRequest("It's already canceled");
+            }
+            await _approvalRequestsRepository.DeleteByLeaveRequestId(id);
+            requestDb.Status = Status.Cancel;
+            await _leaveRequestsRepository.UpdateAsync(requestDb);
+            return Ok();
         }
     }
 }

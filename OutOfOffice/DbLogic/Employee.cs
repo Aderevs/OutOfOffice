@@ -26,6 +26,7 @@
         public byte[]? Photo { get; set; }
         public List<LeaveRequest>? LeaveRequests { get; set; }
         public List<ApprovalRequest>? Approvals { get; set; }
-        public Project? Project { get; set; }
+        public List<Project>? Projects { get; set; }
+        public List<Employee>? SubordinateEmployees { get; set; }
     }
 }

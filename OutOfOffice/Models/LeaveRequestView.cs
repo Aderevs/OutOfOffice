@@ -10,9 +10,11 @@ namespace OutOfOffice.Models
         public AbsenceReason AbsenceReason { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
         public DateOnly StartDate { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
         public DateOnly EndDate { get; set; }
         public string? Comment { get; set; }
         public Status Status { get; init; }

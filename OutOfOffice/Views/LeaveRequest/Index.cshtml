@@ -28,12 +28,27 @@
         tableBody.innerHTML = "";
         requests.ForEach(request => {
             let row = document.createElement("tr");
+            let currentStatus;
+            switch (request.Status) {
+                case 0:
+                    currentStatus = "New";
+                    break;
+                case 1:
+                    currentStatus = "Submit";
+                    break;
+                case 2:
+                    currentStatus = "Cancel";
+                    break;
+                default:
+                    currentStatus = "Unknown";
+                    break;
+            }
             row.innerHTML = 
             `<td>${request.ID}</td>
             <td>${request.AbsenceReason}</td>
             <td>${request.StartDate}</td>
             <td>${request.EndDate}</td>
-            <td>${request.Status}</td>
+            <td>${currentStatus}</td>
             <td><a href="localhost:7129/LeaveRequests/EditRequest?id=${request.ID}>Details / Update</a>"</td>`;
             tableBody.appendChild(row);
         });

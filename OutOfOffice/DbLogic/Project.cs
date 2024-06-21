@@ -14,5 +14,6 @@
         public Employee? ProjectManager { get; set; }
         public string? Comment { get; set; }
         public bool IsActive {  get; set; }
+        public List<Employee> Employees { get; set; }
     }
 }

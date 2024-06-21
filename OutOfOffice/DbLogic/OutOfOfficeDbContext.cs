@@ -18,8 +18,8 @@ namespace OutOfOffice.DbLogic
         {
             modelBuilder.Entity<Employee>()
                 .HasOne(employee => employee.PeoplePartner)
-                .WithOne(employee => employee.PeoplePartner)
-                .HasForeignKey<Employee>(employee => employee.PeoplePartnerId);
+                .WithMany(employee => employee.SubordinateEmployees)
+                .HasForeignKey(employee => employee.PeoplePartnerId);
 
             modelBuilder.Entity<LeaveRequest>()
                 .HasOne(request => request.Employee)
@@ -37,9 +37,29 @@ namespace OutOfOffice.DbLogic
                 .HasForeignKey(approvalRequest => approvalRequest.ApproverId);
 
             modelBuilder.Entity<Project>()
-                .HasOne(project=>project.ProjectManager)
-                .WithOne(employee=>employee.Project)
-                .HasForeignKey<Project>(project=>project.ProjectManagerId);
+                .HasOne(project => project.ProjectManager)
+                .WithMany(employee => employee.Projects)
+                .HasForeignKey(project => project.ProjectManagerId);
+
+            modelBuilder.Entity<Employee>()
+                .HasMany(employee => employee.Projects)
+                .WithMany(project => project.Employees)
+                .UsingEntity<Dictionary<string, object>>(
+                    "EmployeesProjects",
+                    j => j
+                        .HasOne<Project>()
+                        .WithMany()
+                        .HasForeignKey("ProjectId"),
+                    j => j
+                        .HasOne<Employee>()
+                        .WithMany()
+                        .HasForeignKey("EmployeeId"),
+                    j =>
+                    {
+                        j.HasKey("ProjectId", "EmployeeId");
+                        j.ToTable("EmployeesProjects");
+                    });
+
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

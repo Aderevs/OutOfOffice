@@ -26,5 +26,10 @@ namespace OutOfOffice.DbLogic.Repositories
             return await _context.LeaveRequests.FindAsync(requestId);
 #pragma warning restore CS8603 // Possible null reference return.
         }
+        public async Task UpdateAsync(LeaveRequest request)
+        {
+            _context.LeaveRequests.Update(request);
+            await _context.SaveChangesAsync();
+        }
     }
 }

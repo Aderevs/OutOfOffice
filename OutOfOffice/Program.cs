@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using OutOfOffice.DbLogic;
 using OutOfOffice.DbLogic.Repositories;
 
@@ -11,6 +12,11 @@ namespace OutOfOffice
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+               .AddCookie(options =>
+               {
+                   options.LoginPath = "/account/SignIn";
+               });
             builder.Services.AddScoped(provider =>
             {
                 var connectionString = builder.Configuration["ConnectionString"];
@@ -22,6 +28,8 @@ namespace OutOfOffice
             });
             builder.Services.AddScoped<EmployeesRepository>();
             builder.Services.AddScoped<LeaveRequestsRepository>();
+            builder.Services.AddScoped<ApprovalRequestsRepository>();
+            builder.Services.AddSingleton<LeaveRequestDateValidator>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

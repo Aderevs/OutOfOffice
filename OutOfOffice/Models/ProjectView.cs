@@ -12,5 +12,6 @@ namespace OutOfOffice.Models
         public EmployeeView? ProjectManager { get; set; }
         public string? Comment { get; set; }
         public bool IsActive { get; set; }
+        public List<EmployeeView>? Employees { get; set; }
     }
 }

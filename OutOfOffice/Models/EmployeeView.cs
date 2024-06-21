@@ -14,6 +14,6 @@ namespace OutOfOffice.Models
         public byte[]? Photo { get; set; }
         public List<LeaveRequestView>? LeaveRequests { get; set; }
         public List<ApprovalRequestView>? Approvals { get; set; }
-        public ProjectView? Project { get; set; }
+        public List<ProjectView>? Projects { get; set; }
     }
 }
