@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
 using OutOfOffice.DbLogic;
 using OutOfOffice.DbLogic.Repositories;
 using OutOfOffice.Models;
@@ -43,7 +45,7 @@ namespace OutOfOffice.Controllers
             return View();
         }
 
-        public async Task<IActionResult> EditRequest([FromQuery] int id)
+        public async Task<IActionResult> Edit([FromQuery] int id)
         {
             var requestDb = await _leaveRequestsRepository.GetByIdOrDefaultAsync(id);
             if (requestDb == null)
@@ -54,12 +56,17 @@ namespace OutOfOffice.Controllers
             return View(request);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> EditRequest(LeaveRequestView model)
+        [HttpPatch]
+        public async Task<IActionResult> Edit(LeaveRequestView model)
         {
             var validResult = _dateValidator.Validate(model);
             if (ModelState.IsValid && validResult.IsValid)
             {
+                if (model.AbsenceReason == AbsenceReason.OtherInComment && model.Comment.IsNullOrEmpty())
+                {
+                    ModelState.AddModelError("Comment", "You have to leave a comment if you choose \"other option in comment\" as absence reason");
+                    return View(model);
+                }
                 var leaveRequestDb = _mapper.Map<LeaveRequest>(model);
                 leaveRequestDb.EmployeeId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
                 await _leaveRequestsRepository.UpdateAsync(leaveRequestDb);
@@ -75,7 +82,39 @@ namespace OutOfOffice.Controllers
             }
         }
 
-        public async Task<IActionResult> SubmitRequest(int id)
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(LeaveRequestView model)
+        {
+            var validResult = _dateValidator.Validate(model);
+            if (ModelState.IsValid && validResult.IsValid)
+            {
+                if(model.AbsenceReason == AbsenceReason.OtherInComment && model.Comment.IsNullOrEmpty())
+                {
+                    ModelState.AddModelError("Comment", "You have to leave a comment if you choose \"other option in comment\" as absence reason");
+                    return View(model);
+                }
+                var leaveRequestDb = _mapper.Map<LeaveRequest>(model);
+                leaveRequestDb.EmployeeId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                await _leaveRequestsRepository.AddAsync(leaveRequestDb);
+                return View("Index");
+            }
+            else
+            {
+                foreach (var error in validResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+                return View(model);
+            }
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> Submit(int id)
         {
             var requestDb = await _leaveRequestsRepository.GetByIdOrDefaultAsync(id);
             if (requestDb == null)
@@ -118,7 +157,9 @@ namespace OutOfOffice.Controllers
 
             return Ok();
         }
-        public async Task<IActionResult> CancelRequest(int id)
+
+        [HttpPatch]
+        public async Task<IActionResult> Cancel(int id)
         {
             var requestDb = await _leaveRequestsRepository.GetByIdOrDefaultAsync(id);
             if (requestDb == null)

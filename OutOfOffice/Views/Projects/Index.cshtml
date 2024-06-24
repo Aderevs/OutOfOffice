@@ -1,0 +1,32 @@
+﻿@model List<ProjectView>
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>PM</th>
+            <th>Is Active</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var project in Model)
+        {
+            <tr>
+                <td>@project.ID</td>
+                <td>@project.ProjectType</td>
+                <td>@project.StartDate</td>
+                <td>@project.EndDate</td>
+                <td>@project.ProjectManager.FullName</td>
+                <td>@project.IsActive</td>
+                <td>@project.Comment</td>
+            </tr>
+        }
+    </tbody>
+</table>

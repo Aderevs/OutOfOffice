@@ -30,6 +30,8 @@ namespace OutOfOffice
             builder.Services.AddScoped<LeaveRequestsRepository>();
             builder.Services.AddScoped<ApprovalRequestsRepository>();
             builder.Services.AddSingleton<LeaveRequestDateValidator>();
+            builder.Services.AddSingleton<ProjectsRepository>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

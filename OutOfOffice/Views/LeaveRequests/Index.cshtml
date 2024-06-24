@@ -6,7 +6,7 @@
 
 }
 
-
+<a asp-action="Create" class="btn-primary">Create new request +</a>
 <table>
     <thead id="leaverequests-table-head">
         <tr>
@@ -19,6 +19,7 @@
     </thead>
     <tbody id="leaverequests-table-body"></tbody>
 </table>
+
 <script>
     let requests = @Html.Raw(requestsJson);
     let tableBody = document.getElementById("leaverequests-table-body");
@@ -28,34 +29,79 @@
         tableBody.innerHTML = "";
         requests.ForEach(request => {
             let row = document.createElement("tr");
+            let activeSubmit = '';
+            let activeCancel = '';
             let currentStatus;
             switch (request.Status) {
                 case 0:
                     currentStatus = "New";
+                    activeCancel = 'active';
+                    activeSubmit = 'active';
                     break;
                 case 1:
                     currentStatus = "Submit";
+                    activeCancel = 'disabled';
+                    activeSubmit = 'active';
                     break;
                 case 2:
                     currentStatus = "Cancel";
+                    activeCancel = 'disabled';
+                    activeSubmit = 'disabled';
                     break;
                 default:
                     currentStatus = "Unknown";
                     break;
             }
-            row.innerHTML = 
-            `<td>${request.ID}</td>
+
+            row.innerHTML =
+                `<td>${request.ID}</td>
             <td>${request.AbsenceReason}</td>
             <td>${request.StartDate}</td>
             <td>${request.EndDate}</td>
-            <td>${currentStatus}</td>
+            <td>
+                ${currentStatus} 
+                <br/>
+                <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}></button>"
+                <button class="btn btn-dander" onclick="Cancel()" ${activeCancel}></button>"
+            </td>
             <td><a href="localhost:7129/LeaveRequests/EditRequest?id=${request.ID}>Details / Update</a>"</td>`;
             tableBody.appendChild(row);
         });
     }
-    
+
     displayTableBody();
-    
+
+    function Submit(id) {
+        $.ajax({
+            url: `LaveRequests/Submit?Id=${id}`,
+            type: 'PATCH',
+            })),
+            success: function (response) {
+                console.log('Request submitted successfully');
+                @* // Display the HTML response
+                $('#testing-page').html(response); *@
+            },
+            error: function (xhr, status, error) {
+                console.error('Error submitting request: ' + error);
+            }
+        });
+    }
+    function Cancel(id) {
+        $.ajax({
+            url: `LaveRequests/Cancel?Id=${id}`,
+            type: 'PATCH',
+            })),
+            success: function (response) {
+                console.log('Request canceled successfully');
+                @* // Display the HTML response
+                $('#testing-page').html(response); *@
+            },
+            error: function (xhr, status, error) {
+                console.error('Error canceling request: ' + error);
+            }
+        });
+    }
+
     function sortById() {
         if (currentSorting === "IDAscending") {
             currentSorting = "IDDescending";

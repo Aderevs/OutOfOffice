@@ -31,5 +31,10 @@ namespace OutOfOffice.DbLogic.Repositories
             _context.LeaveRequests.Update(request);
             await _context.SaveChangesAsync();
         }
+        public async Task AddAsync(LeaveRequest request)
+        {
+            _context.LeaveRequests.Add(request);
+            await _context.SaveChangesAsync();
+        }
     }
 }
