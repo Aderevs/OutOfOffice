@@ -19,7 +19,7 @@ namespace OutOfOffice.Controllers
             _projectsRepository = projectsRepository;
         }
 
-        public async IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             List<ProjectView> projects;
             if (User.IsInRole("Employee"))

@@ -25,6 +25,7 @@ namespace OutOfOffice.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> SignIn(AuthenticationBindingModel model)
         {
@@ -32,7 +33,7 @@ namespace OutOfOffice.Controllers
             if (ModelState.IsValid)
             {
                 var userOrNull = await _employeesRepository.GetEmployeeByFullNameOrDefaultAsync(model.FullName);
-                if (userOrNull is  Employee employee)
+                if (userOrNull is Employee employee)
                 {
                     var isCorrectPassword = PasswordHasher.IsCorrectPassword(employee, model.Password);
                     if (isCorrectPassword)
@@ -49,6 +50,34 @@ namespace OutOfOffice.Controllers
                 return View(model);
             }
         }
+
+        public async Task<IActionResult> RegisterFirstAdmin()
+        {
+            if (await _employeesRepository.CheckIfAdminAlreadyExistsAsync())
+            {
+                return View("Error", "This application already have at least one administrator, so if you want to create new one, ask them to do it");
+            }
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> RegisterFirstAdmin(AdminBinding model)
+        {
+            if (ModelState.IsValid)
+            {
+                var newUser = new Employee
+                {
+                    FullName = model.FullName,
+                    Salt = Guid.NewGuid(),
+                    Subdivision = Subdivision.CompanySystemsAdministration,
+                    Position = Position.Administrator,
+                    IsActive = true,
+                };
+                newUser.PasswordHash = PasswordHasher.HashPassword(model.Password + newUser.Salt.ToString());
+                await _employeesRepository.AddAsync(newUser);
+                await SignInAsync(newUser);
+            }
+            return View(model);
+        }
         public async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync();
@@ -63,7 +92,12 @@ namespace OutOfOffice.Controllers
                 new Claim(ClaimTypes.Role, role),
                 new Claim(ClaimTypes.NameIdentifier, user.ID.ToString())
             };
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
+            var claimsIdentity = new ClaimsIdentity(
+                claims, 
+                CookieAuthenticationDefaults.AuthenticationScheme, 
+                ClaimTypes.Name, 
+                ClaimTypes.Role);
+
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             await HttpContext.SignInAsync(claimsPrincipal);
         }

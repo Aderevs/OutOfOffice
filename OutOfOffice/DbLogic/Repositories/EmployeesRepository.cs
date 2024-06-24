@@ -44,6 +44,15 @@ namespace OutOfOffice.DbLogic.Repositories
                     .Select(project => project.ProjectManager))
                 .ToListAsync();
         }
+        public async Task<bool> CheckIfAdminAlreadyExistsAsync()
+        {
+            return await _context.Employees.AnyAsync(employee=>employee.Position == Position.Administrator);
+        }
+        public async Task AddAsync(Employee employee)
+        {
+            _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

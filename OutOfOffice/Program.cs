@@ -29,8 +29,8 @@ namespace OutOfOffice
             builder.Services.AddScoped<EmployeesRepository>();
             builder.Services.AddScoped<LeaveRequestsRepository>();
             builder.Services.AddScoped<ApprovalRequestsRepository>();
+            builder.Services.AddScoped<ProjectsRepository>();
             builder.Services.AddSingleton<LeaveRequestDateValidator>();
-            builder.Services.AddSingleton<ProjectsRepository>();
 
             var app = builder.Build();
 

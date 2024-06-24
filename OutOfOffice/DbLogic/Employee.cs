@@ -6,7 +6,8 @@
         MobileAndDesktop,
         DataScienceAndAnalysis,
         IoTAndEmbeddedSystems,
-        ProjectManagementAndQualityAssurance
+        ProjectManagementAndQualityAssurance,
+        CompanySystemsAdministration
     }
     public enum Position
     {
