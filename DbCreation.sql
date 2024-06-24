@@ -13,7 +13,7 @@ CREATE TABLE Employees(
 	  Subdivision INT NOT NULL,
 	  Position INT NOT NULL,
 	  IsActive BIT NOT NULL,
-	  PeoplePartneId INT NOT NULL FOREIGN KEY REFERENCES Employees(ID),
+	  PeoplePartnerId INT NULL FOREIGN KEY REFERENCES Employees(ID),
 	  OutOfOfficeBalance INT NOT NULL,
 	  Photo VARBINARY(MAX) NULL
 );

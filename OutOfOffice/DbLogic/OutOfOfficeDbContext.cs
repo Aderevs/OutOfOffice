@@ -38,7 +38,7 @@ namespace OutOfOffice.DbLogic
 
             modelBuilder.Entity<Project>()
                 .HasOne(project => project.ProjectManager)
-                .WithMany(employee => employee.Projects)
+                .WithMany(employee => employee.SubordinateProjects)
                 .HasForeignKey(project => project.ProjectManagerId);
 
             modelBuilder.Entity<Employee>()

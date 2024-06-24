@@ -25,13 +25,14 @@
         public Subdivision Subdivision { get; set; }
         public Position Position { get; set; }
         public bool IsActive { get; set; }
-        public int PeoplePartnerId { get; set; }
+        public int? PeoplePartnerId { get; set; }
         public Employee? PeoplePartner { get; set; }
         public int OutOfOfficeBalance { get; set; }
         public byte[]? Photo { get; set; }
         public List<LeaveRequest>? LeaveRequests { get; set; }
         public List<ApprovalRequest>? Approvals { get; set; }
         public List<Project>? Projects { get; set; }
+        public List<Project>? SubordinateProjects { get; set; }
         public List<Employee>? SubordinateEmployees { get; set; }
     }
 }

@@ -75,6 +75,7 @@ namespace OutOfOffice.Controllers
                 newUser.PasswordHash = PasswordHasher.HashPassword(model.Password + newUser.Salt.ToString());
                 await _employeesRepository.AddAsync(newUser);
                 await SignInAsync(newUser);
+                return View("Success", "You successfully registered first admin");
             }
             return View(model);
         }
