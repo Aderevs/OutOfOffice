@@ -1,4 +1,5 @@
 ﻿using OutOfOffice.DbLogic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OutOfOffice.Models
 {

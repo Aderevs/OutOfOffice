@@ -53,6 +53,12 @@ namespace OutOfOffice.DbLogic.Repositories
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
         }
+        public async Task<IEnumerable<Employee>> GetAllHRsAsync()
+        {
+            return await _context.Employees
+                .Where(employee => employee.Position == Position.HRManager)
+                .ToListAsync();
+        }
 
     }
 }

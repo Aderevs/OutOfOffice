@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using OutOfOffice.DbLogic;
 using OutOfOffice.Models;
 
@@ -17,6 +18,11 @@ namespace OutOfOffice
             CreateMap<LeaveRequestView, LeaveRequest>();
             CreateMap<ApprovalRequestView, ApprovalRequest>();
             CreateMap<ProjectView, Project>();
+
+            CreateMap<EmployeeBinding, Employee>()
+                .ForMember(dest => dest.PeoplePartnerId, opt => opt.MapFrom(src => 
+                    !src.PeoplePartnerId.IsNullOrEmpty() ? int.Parse(src.PeoplePartnerId) : (int?)null));
         }
+        
     }
 }
