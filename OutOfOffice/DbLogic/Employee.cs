@@ -2,7 +2,11 @@
 {
     public enum Subdivision
     {
-
+        WebDevelopment,
+        MobileAndDesktop,
+        DataScienceAndAnalysis,
+        IoTAndEmbeddedSystems,
+        ProjectManagementAndQualityAssurance
     }
     public enum Position
     {

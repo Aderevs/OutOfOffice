@@ -2,7 +2,13 @@
 {
     public enum ProjectType
     {
-
+        WebDevelopment,
+        MobileAppDevelopment,
+        DesktopApplications,
+        DataAnalysisAndVisualization,
+        MachineLearning,
+        InternetOfThings,
+        Robotics
     }
     public class Project
     {
