@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace OutOfOffice.Models
 {
@@ -17,5 +18,9 @@ namespace OutOfOffice.Models
         [Display(Name = "Confirm password")]
         [UIHint("Password")]
         public string PasswordConfirm { get; set; }
+
+        [BindProperty]
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png", ".gif" })]
+        public IFormFile? Photo { get; set; }
     }
 }

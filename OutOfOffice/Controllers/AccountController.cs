@@ -73,6 +73,15 @@ namespace OutOfOffice.Controllers
                     IsActive = true,
                     OutOfOfficeBalance = 20,
                 };
+                if (model.Photo != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        model.Photo.CopyTo(memoryStream);
+                        byte[] photoBytes = memoryStream.ToArray();
+                        newUser.Photo = photoBytes;
+                    }
+                }
                 newUser.PasswordHash = PasswordHasher.HashPassword(model.Password + newUser.Salt.ToString());
                 await _employeesRepository.AddAsync(newUser);
                 await SignInAsync(newUser);
