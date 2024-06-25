@@ -20,8 +20,9 @@ namespace OutOfOffice
             CreateMap<ProjectView, Project>();
 
             CreateMap<EmployeeBinding, Employee>()
-                .ForMember(dest => dest.PeoplePartnerId, opt => opt.MapFrom(src => 
-                    !src.PeoplePartnerId.IsNullOrEmpty() ? int.Parse(src.PeoplePartnerId) : (int?)null));
+                .ForMember(dest => dest.PeoplePartnerId, opt => opt.MapFrom(src =>
+                    !src.PeoplePartnerId.IsNullOrEmpty() ? int.Parse(src.PeoplePartnerId) : (int?)null))
+                .ForMember(dest => dest.Photo, opt => opt.Ignore());
         }
         
     }

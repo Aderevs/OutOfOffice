@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OutOfOffice.DbLogic;
 using System.ComponentModel.DataAnnotations;
 
@@ -30,8 +31,13 @@ namespace OutOfOffice.Models
         [Required]
         public int OutOfOfficeBalance { get; set; }
 
+        [RequiredIfOptionsNotNull]
         public string? PeoplePartnerId { get; set; }
 
-        public List<SelectListItem> Options { get; set; }
+        [BindProperty]
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png", ".gif" })]
+        public IFormFile? Photo { get; set; }
+
+        public List<SelectListItem>? Options { get; set; }
     }
 }

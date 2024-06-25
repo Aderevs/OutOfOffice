@@ -71,6 +71,7 @@ namespace OutOfOffice.Controllers
                     Subdivision = Subdivision.CompanySystemsAdministration,
                     Position = Position.Administrator,
                     IsActive = true,
+                    OutOfOfficeBalance = 20,
                 };
                 newUser.PasswordHash = PasswordHasher.HashPassword(model.Password + newUser.Salt.ToString());
                 await _employeesRepository.AddAsync(newUser);

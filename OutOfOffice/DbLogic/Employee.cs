@@ -7,6 +7,7 @@
         DataScienceAndAnalysis,
         IoTAndEmbeddedSystems,
         ProjectManagementAndQualityAssurance,
+        HumanResourceManagement,
         CompanySystemsAdministration
     }
     public enum Position

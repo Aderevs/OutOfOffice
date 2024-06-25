@@ -5,13 +5,13 @@
 }
 <div class="col-md-4">
     <h1 class="display-4">Create new employee user</h1>
-    <form asp-action="Create">
+    <form asp-action="Create" enctype="multipart/form-data">
         <div class="form-group">
             <label asp-for="FullName" class="control-label"></label>
             <input asp-for="FullName" class="form-control" />
             <span asp-validation-for="FullName" class="text-danger"></span>
         </div>
-        
+
         <div class="form-group">
             <label asp-for="Password" class="control-label"></label>
             <input asp-for="Password" class="form-control" />
@@ -23,26 +23,34 @@
             <select asp-for="Subdivision" asp-items="Html.GetEnumSelectList<Subdivision>()" class="form-control"></select>
             <span asp-validation-for="Subdivision" class="text-danger"></span>
         </div>
-        
+
         <div class="form-group">
             <label asp-for="Position" class="control-label"></label>
-            <select asp-for="Position" asp-items="Html.GetEnumSelectList<Position>()" class="form-control" ></select>
+            <select asp-for="Position" asp-items="Html.GetEnumSelectList<Position>()" class="form-control"></select>
             <span asp-validation-for="Position" class="text-danger"></span>
         </div>
-        
+
         <div class="form-group">
             <label asp-for="OutOfOfficeBalance" class="control-label"></label>
             <input asp-for="OutOfOfficeBalance" class="form-control" />
             <span asp-validation-for="OutOfOfficeBalance" class="text-danger"></span>
         </div>
-        
+
         <div class="form-group">
             <label asp-for="PeoplePartnerId" class="control-label"></label>
             <select asp-for="PeoplePartnerId" asp-items="Model.Options" class="form-control"></select>
             <span asp-validation-for="PeoplePartnerId" class="text-danger"></span>
         </div>
-
         <br />
+
+        <div class="form-group">
+            <label asp-for="Photo">Upload Photo:</label>
+            <input asp-for="Photo" type="file" class="form-control"/>
+            <span asp-validation-for="Photo" class="text-danger"></span>
+        </div>
+        
+        <br />
+
         <div class="form-group">
             <input type="submit" value="Add" class="btn btn-primary" />
         </div>

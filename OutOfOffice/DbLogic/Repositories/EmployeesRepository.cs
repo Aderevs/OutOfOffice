@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace OutOfOffice.DbLogic.Repositories
 {
@@ -58,6 +59,10 @@ namespace OutOfOffice.DbLogic.Repositories
             return await _context.Employees
                 .Where(employee => employee.Position == Position.HRManager)
                 .ToListAsync();
+        }
+        public async Task<bool> CheckIfAnyHrExistsAsync()
+        {
+            return await _context.Employees.AnyAsync(employee => employee.Position == Position.HRManager);
         }
 
     }

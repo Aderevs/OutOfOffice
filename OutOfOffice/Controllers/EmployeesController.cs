@@ -32,15 +32,32 @@ namespace OutOfOffice.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(EmployeeBinding model)
         {
-            //if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var newEmployee = _mapper.Map<Employee>(model);
+                if (model.Photo != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        model.Photo.CopyTo(memoryStream);
+                        byte[] photoBytes = memoryStream.ToArray();
+                        newEmployee.Photo = photoBytes;
+                    }
+                }
                 newEmployee.Salt = Guid.NewGuid();
                 newEmployee.PasswordHash = PasswordHasher.HashPassword(model.Password);
+                newEmployee.IsActive = true;
                 await _employeesRepository.AddAsync(newEmployee);
                 return View("Success", "You successfully add new employee");
             }
-            //return View(model);
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                  .Select(e => e.ErrorMessage)
+                                  .ToList();
+            foreach (var error in errors)
+            {
+                Console.WriteLine(error);
+            }
+            return View(model);
         }
     }
 }
