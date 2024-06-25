@@ -45,7 +45,7 @@ namespace OutOfOffice.Controllers
                     }
                 }
                 newEmployee.Salt = Guid.NewGuid();
-                newEmployee.PasswordHash = PasswordHasher.HashPassword(model.Password);
+                newEmployee.PasswordHash = PasswordHasher.HashPassword(model.Password + newEmployee.Salt.ToString());
                 newEmployee.IsActive = true;
                 await _employeesRepository.AddAsync(newEmployee);
                 return View("Success", "You successfully add new employee");

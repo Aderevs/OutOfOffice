@@ -6,15 +6,15 @@
 
 }
 
-<a asp-action="Create" class="btn-primary">Create new request +</a>
-<table>
+<a asp-action="Create" class="btn btn-primary">Create new request +</a>
+<table class="leaves-table">
     <thead id="leaverequests-table-head">
         <tr>
-            <th><button onclick="sortById()">ID</button></th>
-            <th><button onclick="sortByReason()">Reason</button></th>
-            <th><button onclick="sortByStartDate()">Start</button></th>
-            <th><button onclick="sortByEndDate()">End</button></th>
-            <th><button onclick="sortByStatus()">Status</button></th>
+            <th><button class="btn" onclick="sortById()">ID</button></th>
+            <th><button class="btn" onclick="sortByReason()">Reason</button></th>
+            <th><button class="btn" onclick="sortByStartDate()">Start</button></th>
+            <th><button class="btn" onclick="sortByEndDate()">End</button></th>
+            <th><button class="btn" onclick="sortByStatus()">Status</button></th>
         </tr>
     </thead>
     <tbody id="leaverequests-table-body"></tbody>
@@ -27,44 +27,39 @@
 
     function displayTableBody() {
         tableBody.innerHTML = "";
-        requests.ForEach(request => {
+        requests.forEach(function (request) {
             let row = document.createElement("tr");
             let activeSubmit = '';
             let activeCancel = '';
-            let currentStatus;
             switch (request.Status) {
-                case 0:
-                    currentStatus = "New";
+                case 'New':
                     activeCancel = 'active';
                     activeSubmit = 'active';
                     break;
-                case 1:
-                    currentStatus = "Submit";
-                    activeCancel = 'disabled';
-                    activeSubmit = 'active';
+                case 'Submit':
+                    activeCancel = 'active';
+                    activeSubmit = 'disabled';
                     break;
-                case 2:
-                    currentStatus = "Cancel";
+                case 'Cancel':
                     activeCancel = 'disabled';
                     activeSubmit = 'disabled';
                     break;
                 default:
-                    currentStatus = "Unknown";
                     break;
             }
 
             row.innerHTML =
                 `<td>${request.ID}</td>
-            <td>${request.AbsenceReason}</td>
-            <td>${request.StartDate}</td>
-            <td>${request.EndDate}</td>
-            <td>
-                ${currentStatus} 
-                <br/>
-                <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}></button>"
-                <button class="btn btn-dander" onclick="Cancel()" ${activeCancel}></button>"
-            </td>
-            <td><a href="localhost:7129/LeaveRequests/EditRequest?id=${request.ID}>Details / Update</a>"</td>`;
+                <td>${request.AbsenceReason}</td>
+                <td>${request.StartDate}</td>
+                <td>${request.EndDate}</td>
+                <td>
+                    ${request.Status}
+                    <br/>
+                    <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}>Submit</button>
+                    <button class="btn btn-danger" onclick="Cancel(${request.ID})" ${activeCancel}>Cancel</button>
+                </td>
+                    <td><a href="https://localhost:7129/LeaveRequests/Edit?id=${request.ID}">Details / Update</a></td>`;
             tableBody.appendChild(row);
         });
     }
@@ -72,40 +67,63 @@
     displayTableBody();
 
     function Submit(id) {
-        $.ajax({
-            url: `LaveRequests/Submit?Id=${id}`,
-            type: 'PATCH',
-            })),
-            success: function (response) {
-                console.log('Request submitted successfully');
-                @* // Display the HTML response
-                $('#testing-page').html(response); *@
-            },
-            error: function (xhr, status, error) {
-                console.error('Error submitting request: ' + error);
-            }
-        });
+        const url = `LeaveRequests/Submit?id=${id}`;
+        const options = {
+            method: 'PATCH',
+        };
+        fetch(url, options)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+            })
+            .then(data => {
+
+                for (let i = 0; i < requests.length; i++) {
+                    if (requests[i].ID === id) {
+                        requests[i].Status = "Submit";
+                        break;
+                    }
+                }
+                displayTableBody();
+                //console.log('Отримані дані:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
     function Cancel(id) {
-        $.ajax({
-            url: `LaveRequests/Cancel?Id=${id}`,
-            type: 'PATCH',
-            })),
-            success: function (response) {
-                console.log('Request canceled successfully');
-                @* // Display the HTML response
-                $('#testing-page').html(response); *@
-            },
-            error: function (xhr, status, error) {
-                console.error('Error canceling request: ' + error);
-            }
-        });
+
+        const url = `LeaveRequests/Cancel?id=${id}`;
+        const options = {
+            method: 'PATCH',
+        };
+        fetch(url, options)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+            })
+            .then(data => {
+                for (let i = 0; i < requests.length; i++) {
+                    if (requests[i].ID === id) {
+                        requests[i].Status = "Cancel";
+                        break;
+                    }
+                }
+                displayTableBody();
+                //console.log('Отримані дані:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 
     function sortById() {
         if (currentSorting === "IDAscending") {
             currentSorting = "IDDescending";
-            requests.sort((a, b) => b.ID - a.ID);
+            //requests.sort((a, b) => b.ID - a.ID);
+            requests.reverse();
         } else {
             currentSorting = "IDAscending";
             requests.sort((a, b) => a.ID - b.ID);
@@ -116,10 +134,11 @@
     function sortByReason() {
         if (currentSorting === "ReasonAscending") {
             currentSorting = "ReasonDescending";
-            requests.sort((a, b) => b.AbsenceReason - a.AbsenceReason);
+            //requests.sort((a, b) => b.AbsenceReason.localeCompare(a.AbsenceReason));
+            requests.reverse();
         } else {
             currentSorting = "ReasonAscending";
-            requests.sort((a, b) => a.AbsenceReason - b.AbsenceReason);
+            requests.sort((a, b) => a.AbsenceReason.localeCompare(b.AbsenceReason));
         }
         displayTableBody();
     }
@@ -127,10 +146,11 @@
     function sortByStartDate() {
         if (currentSorting === "StartAscending") {
             currentSorting = "StartDescending";
-            requests.sort((a, b) => b.StartDate - a.StartDate);
+            //requests.sort((a, b) => b.StartDate.localeCompare(a.StartDate));
+            requests.reverse();
         } else {
             currentSorting = "StartAscending";
-            requests.sort((a, b) => a.StartDate - b.StartDate);
+            requests.sort((a, b) => a.StartDate.localeCompare(b.StartDate));
         }
         displayTableBody();
     }
@@ -138,10 +158,11 @@
     function sortByEndDate() {
         if (currentSorting === "EndAscending") {
             currentSorting = "EndDescending";
-            requests.sort((a, b) => b.EndDate - a.EndDate);
+            //requests.sort((a, b) => b.EndDate.localeCompare(a.EndDate));
+            requests.reverse();
         } else {
             currentSorting = "EndAscending";
-            requests.sort((a, b) => a.EndDate - b.EndDate);
+            requests.sort((a, b) => a.EndDate.localeCompare(b.EndDate));
         }
         displayTableBody();
     }
@@ -149,10 +170,11 @@
     function sortByStatus() {
         if (currentSorting === "StatusAscending") {
             currentSorting = "StatusDescending";
-            requests.sort((a, b) => b.Status - a.Status);
+            //requests.sort((a, b) => b.Status.localeCompare(a.Status));
+            requests.reverse();
         } else {
             currentSorting = 'StatusAscending';
-            requests.sort((a, b) => a.Status - b.Status);
+            requests.sort((a, b) => a.Status.localeCompare(b.Status));
         }
         displayTableBody();
     }

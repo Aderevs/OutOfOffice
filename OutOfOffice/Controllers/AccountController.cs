@@ -60,7 +60,7 @@ namespace OutOfOffice.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> RegisterFirstAdmin(AdminBinding model)
+        public async Task<IActionResult> RegisterFirstAdmin(AdminBinding model) 
         {
             if (ModelState.IsValid)
             {

@@ -56,7 +56,7 @@ namespace OutOfOffice.Controllers
             return View(request);
         }
 
-        [HttpPatch]
+        [HttpPost]
         public async Task<IActionResult> Edit(LeaveRequestView model)
         {
             var validResult = _dateValidator.Validate(model);
@@ -70,7 +70,7 @@ namespace OutOfOffice.Controllers
                 var leaveRequestDb = _mapper.Map<LeaveRequest>(model);
                 leaveRequestDb.EmployeeId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
                 await _leaveRequestsRepository.UpdateAsync(leaveRequestDb);
-                return View("Index");
+                return RedirectToAction("Index");
             }
             else
             {
@@ -101,7 +101,7 @@ namespace OutOfOffice.Controllers
                 var leaveRequestDb = _mapper.Map<LeaveRequest>(model);
                 leaveRequestDb.EmployeeId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
                 await _leaveRequestsRepository.AddAsync(leaveRequestDb);
-                return View("Index");
+                return RedirectToAction("Index");
             }
             else
             {
@@ -114,7 +114,7 @@ namespace OutOfOffice.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> Submit(int id)
+        public async Task<IActionResult> Submit([FromQuery] int id)
         {
             var requestDb = await _leaveRequestsRepository.GetByIdOrDefaultAsync(id);
             if (requestDb == null)
