@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using OutOfOffice.DbLogic;
 using OutOfOffice.DbLogic.Repositories;
 using OutOfOffice.Models;
+using System.Security.Claims;
 
 namespace OutOfOffice.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator,HRManager")]
     public class EmployeesController : Controller
     {
         private readonly EmployeesRepository _employeesRepository;
@@ -19,10 +20,18 @@ namespace OutOfOffice.Controllers
             _mapper = mapper;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (User.IsInRole("HRManager"))
+            {
+                var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var employeesDb = await _employeesRepository.GetAllSubordinateEmployeesByHRIdAsync(currentUserId);
+                var employees = _mapper.Map<List<EmployeeView>>(employeesDb);
+                return View(employees);
+            }
             return View();
         }
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create()
         {
             var allHRs = (List<Employee>)await _employeesRepository.GetAllHRsAsync();
@@ -30,6 +39,7 @@ namespace OutOfOffice.Controllers
             return View(model);
         }
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(EmployeeBinding model)
         {
             if (ModelState.IsValid)
@@ -58,6 +68,19 @@ namespace OutOfOffice.Controllers
                 Console.WriteLine(error);
             }
             return View(model);
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> ChangeStatus([FromQuery]int id)
+        {
+            var employeeOrNull = await _employeesRepository.GetByIdOrDefaultAsync(id);
+            if(employeeOrNull is Employee employee)
+            {
+                //bool statusToUpdate = !employee.IsActive;
+                await _employeesRepository.ChangeStatusForCertainEmployeeAsync(employee);
+                return Ok(employee.IsActive);
+            }
+            throw new ArgumentException("No employee with such id was found");
         }
     }
 }

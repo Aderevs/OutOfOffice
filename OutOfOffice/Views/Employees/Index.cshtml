@@ -1,0 +1,163 @@
+﻿@model List<EmployeeView>
+@{
+    ViewData["Title"] = "Subordinate Employees";
+    var employeesJson = System.Text.Json.JsonSerializer.Serialize(Model);
+}
+<table class="leaves-table">
+    <thead id="employees-table-head">
+        <tr>
+            <th><button class="btn" onclick="sortById()">ID</button></th>
+            <th><button class="btn" onclick="sortByFullName()">Full Name</button></th>
+            <th><button class="btn" onclick="sortBySubdivision()">Subdivision</button></th>
+            <th><button class="btn" onclick="sortByPosition()">Position</button></th>
+            <th><button class="btn" onclick="sortByActiveStatus()">Is Active</button></th>
+            <th><button class="btn" onclick="sortByBalance()">Balance out of office</button></th>
+        </tr>
+    </thead>
+    <tbody id="employees-table-body"></tbody>
+</table>
+
+<script>
+    let employees = @Html.Raw(employeesJson);
+    let tableBody = document.getElementById("employees-table-body");
+    let currentSorting = "IDAscending";
+
+    function displayTableBody() {
+        tableBody.innerHTML = "";
+        employees.forEach(function (employee) {
+            let row = document.createElement("tr");
+            @*let activeSubmit = '';
+            let activeCancel = '';
+             switch (request.Status) {
+                case 'New':
+                    activeCancel = 'active';
+                    activeSubmit = 'active';
+                    break;
+                case 'Submit':
+                    activeCancel = 'active';
+                    activeSubmit = 'disabled';
+                    break;
+                case 'Cancel':
+                    activeCancel = 'disabled';
+                    activeSubmit = 'disabled';
+                    break;
+                default:
+                    break;
+            } *@
+
+            row.innerHTML =
+                `<td>${employee.ID}</td>
+                <td>${employee.FullName}</td>
+                <td>${employee.Subdivision}</td>
+                <td>${employee.Position}</td>
+                <td>${employee.IsActive}
+                    <br/>
+                    <button class="btn btn-warning" onclick="CangeStatus(${employee.ID})">CangeStatus</button>
+                </td>
+                <td>${employee.OutOfOfficeBalance}</td>
+                @* <td>
+                    ${employee.Status}
+                    <br/>
+                    <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}>Submit</button>
+                    <button class="btn btn-danger" onclick="Cancel(${request.ID})" ${activeCancel}>Cancel</button>
+                </td>
+                    <td><a href="https://localhost:7129/LeaveRequests/Edit?id=${request.ID}">Details / Update</a></td>*@`; 
+            tableBody.appendChild(row);
+        });
+    }
+
+    displayTableBody();
+
+    function sortById() {
+        if (currentSorting === "IDAscending") {
+            currentSorting = "IDDescending";
+            employees.reverse();
+        } else {
+            currentSorting = "IDAscending";
+            employees.sort((a, b) => a.ID - b.ID);
+        }
+        displayTableBody();
+    }
+
+    function sortByFullName() {
+        if (currentSorting === "NameAscending") {
+            currentSorting = "NameDescending";
+            employees.reverse();
+        } else {
+            currentSorting = "NameAscending";
+            employees.sort((a, b) => a.FullName.localeCompare(b.FullName));
+        }
+        displayTableBody();
+    }
+
+    function sortBySubdivision() {
+        if (currentSorting === "SubdivisionAscending") {
+            currentSorting = "SubdivisionDescending";
+            employees.reverse();
+        } else {
+            currentSorting = "SubdivisionAscending";
+            employees.sort((a, b) => a.Subdivision.localeCompare(b.Subdivision));
+        }
+        displayTableBody();
+    }
+
+    function sortByPosition() {
+        if (currentSorting === "PositionAscending") {
+            currentSorting = "PositionDescending";
+            employees.reverse();
+        } else {
+            currentSorting = "PositionAscending";
+            employees.sort((a, b) => a.Position.localeCompare(b.Position));
+        }
+        displayTableBody();
+    }
+
+    function sortByActiveStatus() {
+        if (currentSorting === "StatusAscending") {
+            currentSorting = "StatusDescending";
+            employees.reverse();
+        } else {
+            currentSorting = 'StatusAscending';
+            employees.sort((a, b) => a.IsActive.localeCompare(b.Status));
+        }
+        displayTableBody();
+    }
+    
+    function sortByBalance() {
+        if (currentSorting === "BalanceAscending") {
+            currentSorting = "BalanceDescending";
+            employees.reverse();
+        } else {
+            currentSorting = "BalanceAscending";
+            employees.sort((a, b) => a.OutOfOfficeBalance - b.OutOfOfficeBalance);
+        }
+        displayTableBody();
+    }
+
+    function CangeStatus(id) {
+        const url = `   ChangeStatus?id=${id}`;
+        const options = {
+            method: 'PATCH',
+        };
+        fetch(url, options)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                    return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                for (let i = 0; i < employees.length; i++) {
+                    if (employees[i].ID === id) {
+                        employees[i].IsActive = data;
+                        break;
+                    }
+                }
+                displayTableBody();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+</script>

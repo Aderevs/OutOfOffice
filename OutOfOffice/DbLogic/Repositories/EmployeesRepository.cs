@@ -64,6 +64,17 @@ namespace OutOfOffice.DbLogic.Repositories
         {
             return await _context.Employees.AnyAsync(employee => employee.Position == Position.HRManager);
         }
-
+        public async Task<IEnumerable<Employee>> GetAllSubordinateEmployeesByHRIdAsync(int HRId)
+        {
+            return await _context.Employees
+                .Where(employee => employee.PeoplePartnerId == HRId)
+                .ToListAsync();
+        }
+        public async Task ChangeStatusForCertainEmployeeAsync(Employee employee)
+        {
+            employee.IsActive = !employee.IsActive;
+            _context.Employees.Update(employee);
+            await _context.SaveChangesAsync();
+        }
     }
 }
