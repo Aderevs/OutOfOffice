@@ -47,7 +47,7 @@ namespace OutOfOffice.DbLogic.Repositories
         }
         public async Task<bool> CheckIfAdminAlreadyExistsAsync()
         {
-            return await _context.Employees.AnyAsync(employee=>employee.Position == Position.Administrator);
+            return await _context.Employees.AnyAsync(employee => employee.Position == Position.Administrator);
         }
         public async Task AddAsync(Employee employee)
         {
@@ -73,6 +73,15 @@ namespace OutOfOffice.DbLogic.Repositories
         public async Task ChangeStatusForCertainEmployeeAsync(Employee employee)
         {
             employee.IsActive = !employee.IsActive;
+            _context.Employees.Update(employee);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<bool> CheckIfExistsEmployeeWithSuchIdAsync(int id)
+        {
+            return await _context.Employees.AnyAsync(employee => employee.ID == id);
+        }
+        public async Task UpdateAsync(Employee employee)
+        {
             _context.Employees.Update(employee);
             await _context.SaveChangesAsync();
         }

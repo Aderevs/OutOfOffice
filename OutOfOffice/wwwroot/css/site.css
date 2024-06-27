@@ -29,3 +29,6 @@ body {
 .leaves-table thead tr th {
     text-align: center;
 }
+.employee-photo{
+    width: 150px;
+}

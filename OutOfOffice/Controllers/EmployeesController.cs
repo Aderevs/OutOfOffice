@@ -31,16 +31,16 @@ namespace OutOfOffice.Controllers
             }
             return View();
         }
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,HRManager")]
         public async Task<IActionResult> Create()
         {
             var allHRs = (List<Employee>)await _employeesRepository.GetAllHRsAsync();
-            EmployeeBinding model = new(allHRs);
+            EmployeeCreateBinding model = new(allHRs);
             return View(model);
         }
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Create(EmployeeBinding model)
+        [Authorize(Roles = "Administrator,HRManager")]
+        public async Task<IActionResult> Create(EmployeeCreateBinding model)
         {
             if (ModelState.IsValid)
             {
@@ -71,14 +71,73 @@ namespace OutOfOffice.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> ChangeStatus([FromQuery]int id)
+        public async Task<IActionResult> ChangeStatus([FromQuery] int id)
         {
             var employeeOrNull = await _employeesRepository.GetByIdOrDefaultAsync(id);
-            if(employeeOrNull is Employee employee)
+            if (employeeOrNull is Employee employee)
             {
-                //bool statusToUpdate = !employee.IsActive;
                 await _employeesRepository.ChangeStatusForCertainEmployeeAsync(employee);
                 return Ok(employee.IsActive);
+            }
+            throw new ArgumentException("No employee with such id was found");
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var employeeDb = await _employeesRepository.GetByIdOrDefaultAsync(id);
+            if (employeeDb is Employee)
+            {
+                var employeeView = _mapper.Map<EmployeeEditBinding>(employeeDb);
+                return View(employeeView);
+            }
+            else
+            {
+                throw new ArgumentException("No employee with such id was found");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EmployeeEditBinding model)
+        {
+            if (ModelState.IsValid)
+            {
+                var employeeDb = await _employeesRepository.GetByIdOrDefaultAsync(model.ID);
+                if (employeeDb is not null)
+                {
+                    employeeDb.FullName = model.FullName;
+                    employeeDb.Subdivision = model.Subdivision;
+                    employeeDb.Position = model.Position;
+                    employeeDb.OutOfOfficeBalance = model.OutOfOfficeBalance;
+                    if (model.Photo != null)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            model.Photo.CopyTo(memoryStream);
+                            byte[] photoBytes = memoryStream.ToArray();
+                            employeeDb.Photo = photoBytes;
+                        }
+                    }
+                    await _employeesRepository.UpdateAsync(employeeDb);
+                    return RedirectToAction("Index");
+                }
+
+                throw new ArgumentException("Field ID is immutable, no employee with such id was found");
+            }
+            else
+            {
+                return View(model);
+            }
+        }
+        public async Task<IActionResult> GetPhotoById([FromQuery] int id)
+        {
+            var employee = await _employeesRepository.GetByIdOrDefaultAsync(id);
+            if (employee is not null)
+            {
+                if (employee.Photo != null)
+                {
+                    return File(employee.Photo, "image/jpeg");
+                }
+                throw new InvalidOperationException("employee with such id doesn't have the photo");
             }
             throw new ArgumentException("No employee with such id was found");
         }

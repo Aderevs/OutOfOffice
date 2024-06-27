@@ -3,6 +3,7 @@
     ViewData["Title"] = "Subordinate Employees";
     var employeesJson = System.Text.Json.JsonSerializer.Serialize(Model);
 }
+<a asp-action="Create" class="btn btn-primary">Add new employee +</a>
 <table class="leaves-table">
     <thead id="employees-table-head">
         <tr>
@@ -26,25 +27,6 @@
         tableBody.innerHTML = "";
         employees.forEach(function (employee) {
             let row = document.createElement("tr");
-            @*let activeSubmit = '';
-            let activeCancel = '';
-             switch (request.Status) {
-                case 'New':
-                    activeCancel = 'active';
-                    activeSubmit = 'active';
-                    break;
-                case 'Submit':
-                    activeCancel = 'active';
-                    activeSubmit = 'disabled';
-                    break;
-                case 'Cancel':
-                    activeCancel = 'disabled';
-                    activeSubmit = 'disabled';
-                    break;
-                default:
-                    break;
-            } *@
-
             row.innerHTML =
                 `<td>${employee.ID}</td>
                 <td>${employee.FullName}</td>
@@ -55,13 +37,7 @@
                     <button class="btn btn-warning" onclick="CangeStatus(${employee.ID})">CangeStatus</button>
                 </td>
                 <td>${employee.OutOfOfficeBalance}</td>
-                @* <td>
-                    ${employee.Status}
-                    <br/>
-                    <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}>Submit</button>
-                    <button class="btn btn-danger" onclick="Cancel(${request.ID})" ${activeCancel}>Cancel</button>
-                </td>
-                    <td><a href="https://localhost:7129/LeaveRequests/Edit?id=${request.ID}">Details / Update</a></td>*@`; 
+                <td><a href="https://localhost:7129/Employees/Edit?id=${employee.ID}">Edit</a></td>`;
             tableBody.appendChild(row);
         });
     }
@@ -118,11 +94,11 @@
             employees.reverse();
         } else {
             currentSorting = 'StatusAscending';
-            employees.sort((a, b) => a.IsActive.localeCompare(b.Status));
+            employees.sort((a, b) => a.IsActive - b.IsActive);
         }
         displayTableBody();
     }
-    
+
     function sortByBalance() {
         if (currentSorting === "BalanceAscending") {
             currentSorting = "BalanceDescending";
@@ -135,7 +111,7 @@
     }
 
     function CangeStatus(id) {
-        const url = `   ChangeStatus?id=${id}`;
+        const url = `employees/ChangeStatus?id=${id}`;
         const options = {
             method: 'PATCH',
         };
@@ -144,7 +120,7 @@
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                    return response.json();
+                return response.json();
             })
             .then(data => {
                 console.log(data);

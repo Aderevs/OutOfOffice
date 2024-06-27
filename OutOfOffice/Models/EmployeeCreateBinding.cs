@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OutOfOffice.Models
 {
-    public class EmployeeBinding
+    public class EmployeeCreateBinding
     {
-        public EmployeeBinding() { }
-        public EmployeeBinding(List<Employee> allHRs)
+        public EmployeeCreateBinding() { }
+        public EmployeeCreateBinding(List<Employee> allHRs)
         {
             Options = [];
             foreach (var hr in allHRs)
@@ -16,6 +16,7 @@ namespace OutOfOffice.Models
                 Options.Add(new(hr.FullName, hr.ID.ToString()));
             }
         }
+        public int ID { get; set; }
         [Required]
         public string FullName { get; set; }
 
@@ -35,8 +36,10 @@ namespace OutOfOffice.Models
         public string? PeoplePartnerId { get; set; }
 
         [BindProperty]
-        [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png", ".gif" })]
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg"/*, ".png", ".gif"*/ })]
         public IFormFile? Photo { get; set; }
+
+        public bool HasPhoto { get; set; }
 
         public List<SelectListItem>? Options { get; set; }
     }
