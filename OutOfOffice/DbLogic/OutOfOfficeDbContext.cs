@@ -28,8 +28,8 @@ namespace OutOfOffice.DbLogic
 
             modelBuilder.Entity<ApprovalRequest>()
                 .HasOne(approvalRequest => approvalRequest.LeaveRequest)
-                .WithOne(leaveRequest => leaveRequest.ApprovalRequest)
-                .HasForeignKey<ApprovalRequest>(approvalRequest => approvalRequest.LeaveRequestId);
+                .WithMany(leaveRequest => leaveRequest.ApprovalRequests)
+                .HasForeignKey(approvalRequest => approvalRequest.LeaveRequestId);
 
             modelBuilder.Entity<ApprovalRequest>()
                 .HasOne(approvalRequest => approvalRequest.Approver)

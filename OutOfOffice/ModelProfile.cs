@@ -11,7 +11,12 @@ namespace OutOfOffice
         {
             CreateMap<Employee, EmployeeView>();
             CreateMap<LeaveRequest, LeaveRequestView>();
-            CreateMap<ApprovalRequest, ApprovalRequestView>();
+            CreateMap<ApprovalRequest, ApprovalRequestView>()
+                .ForMember(dest => dest.AbsenceReason, opt => opt.MapFrom(src => src.LeaveRequest.AbsenceReason))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.LeaveRequest.StartDate))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.LeaveRequest.EndDate))
+                .ForMember(dest => dest.LeaveComment, opt => opt.MapFrom(src => src.LeaveRequest.Comment));
+
             CreateMap<Project, ProjectView>();
 
             CreateMap<EmployeeView, Employee>();

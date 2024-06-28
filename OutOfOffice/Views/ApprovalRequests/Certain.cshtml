@@ -1,0 +1,59 @@
+﻿@model ApprovalRequestView
+@{
+    ViewData["Title"] = "Approval request details";
+}
+
+<div class="col-md-4">
+    <h1 class="display-4">Approval request</h1>
+    <form id="approval-form" method="post">
+        <div class="form-group">
+            <label asp-for="ID" class="control-label"></label>
+            <input asp-for="ID" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <label asp-for="AbsenceReason" class="control-label"></label>
+            <input asp-for="AbsenceReason" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <label asp-for="StartDate" class="control-label"></label>
+            <input asp-for="StartDate" class="form-control" readonly />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EndDate" class="control-label"></label>
+            <input asp-for="EndDate" class="form-control" readonly />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LeaveComment" class="control-label"></label>
+            <input asp-for="LeaveComment" class="form-control" readonly />
+            <span asp-validation-for="LeaveComment" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Status" class="control-label"></label>
+            <input asp-for="Status" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <label asp-for="Comment" class="control-label"></label>
+            <input asp-for="Comment" class="form-control" />
+            <span asp-validation-for="Comment" class="text-danger"></span>
+        </div>
+
+        <br />
+        <br />
+        <div class="form-group">
+            <button type="button" onclick="submitForm('Approve')" class="btn btn-success">Approve</button>
+            <button type="button" onclick="submitForm('Refuse')" class="btn btn-danger">Refuse</button>
+        </div>
+    </form>
+</div>
+<script>
+    function submitForm(action) {
+        var form = document.getElementById('approval-form');
+        form.setAttribute('action', `/ApprovalRequests/${action}`);
+        form.submit();
+    }
+</script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

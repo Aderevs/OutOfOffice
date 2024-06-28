@@ -24,6 +24,6 @@
         public DateOnly EndDate { get; set; }
         public string? Comment { get; set; }
         public Status Status { get; set; } = Status.New;
-        public ApprovalRequest? ApprovalRequest { get; set; }
+        public List<ApprovalRequest>? ApprovalRequests { get; set; }
     }
 }

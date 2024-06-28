@@ -45,30 +45,42 @@ namespace OutOfOffice.DbLogic.Repositories
                     .Select(project => project.ProjectManager))
                 .ToListAsync();
         }
-        public async Task<bool> CheckIfAdminAlreadyExistsAsync()
-        {
-            return await _context.Employees.AnyAsync(employee => employee.Position == Position.Administrator);
-        }
-        public async Task AddAsync(Employee employee)
-        {
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
-        }
         public async Task<IEnumerable<Employee>> GetAllHRsAsync()
         {
             return await _context.Employees
                 .Where(employee => employee.Position == Position.HRManager)
                 .ToListAsync();
         }
-        public async Task<bool> CheckIfAnyHrExistsAsync()
-        {
-            return await _context.Employees.AnyAsync(employee => employee.Position == Position.HRManager);
-        }
         public async Task<IEnumerable<Employee>> GetAllSubordinateEmployeesByHRIdAsync(int HRId)
         {
             return await _context.Employees
                 .Where(employee => employee.PeoplePartnerId == HRId)
                 .ToListAsync();
+        }
+        public async Task<Employee> GetByLeaveRequestIdAsync(int requestId)
+        {
+            var request = await _context.LeaveRequests
+                .Include(request => request.Employee)
+                .FirstOrDefaultAsync(request => request.ID == requestId);
+            return request.Employee;
+        }
+        public async Task AddAsync(Employee employee)
+        {
+            _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+        }
+        public async Task UpdateAsync(Employee employee)
+        {
+            _context.Employees.Update(employee);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<bool> CheckIfAdminAlreadyExistsAsync()
+        {
+            return await _context.Employees.AnyAsync(employee => employee.Position == Position.Administrator);
+        }
+        public async Task<bool> CheckIfAnyHrExistsAsync()
+        {
+            return await _context.Employees.AnyAsync(employee => employee.Position == Position.HRManager);
         }
         public async Task ChangeStatusForCertainEmployeeAsync(Employee employee)
         {
@@ -79,11 +91,6 @@ namespace OutOfOffice.DbLogic.Repositories
         public async Task<bool> CheckIfExistsEmployeeWithSuchIdAsync(int id)
         {
             return await _context.Employees.AnyAsync(employee => employee.ID == id);
-        }
-        public async Task UpdateAsync(Employee employee)
-        {
-            _context.Employees.Update(employee);
-            await _context.SaveChangesAsync();
         }
     }
 }

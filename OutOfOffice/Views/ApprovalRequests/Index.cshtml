@@ -1,14 +1,14 @@
-﻿@model List<LeaveRequestView>
+﻿@model List<ApprovalRequestView>
 
 @{
-    ViewData["Title"] = "Leave requests";
+    ViewData["Title"] = "Approval requests";
     var requestsJson = System.Text.Json.JsonSerializer.Serialize(Model);
 
 }
 
-<a asp-action="Create" class="btn btn-primary">Create new request +</a>
-<table class="tables">
-    <thead id="leaverequests-table-head">
+@* <a asp-action="Create" class="btn btn-primary">Create new request +</a>*@
+ <table class="tables">
+    <thead id="approvalrequests-table-head">
         <tr>
             <th><button class="btn" onclick="sortById()">ID</button></th>
             <th><button class="btn" onclick="sortByReason()">Reason</button></th>
@@ -17,12 +17,12 @@
             <th><button class="btn" onclick="sortByStatus()">Status</button></th>
         </tr>
     </thead>
-    <tbody id="leaverequests-table-body"></tbody>
+    <tbody id="approvalrequests-table-body"></tbody>
 </table>
 
 <script>
     let requests = @Html.Raw(requestsJson);
-    let tableBody = document.getElementById("leaverequests-table-body");
+    let tableBody = document.getElementById("approvalrequests-table-body");
     let currentSorting = "IDAscending";
 
     function displayTableBody() {
@@ -47,7 +47,7 @@
                 default:
                     break;
             }
-
+            
             row.innerHTML =
                 `<td>${request.ID}</td>
                 <td>${request.AbsenceReason}</td>
@@ -56,10 +56,9 @@
                 <td>
                     ${request.Status}
                     <br/>
-                    <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}>Submit</button>
-                    <button class="btn btn-danger" onclick="Cancel(${request.ID})" ${activeCancel}>Cancel</button>
+                    <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}>Approve</button>
                 </td>
-                    <td><a href="https://localhost:7129/LeaveRequests/Edit?id=${request.ID}">Details / Update</a></td>`;
+                    <td><a href="https://localhost:7129/ApprovalRequests/certain?id=${request.ID}">Details</a></td>`;
             tableBody.appendChild(row);
         });
     }
@@ -67,7 +66,7 @@
     displayTableBody();
 
     function Submit(id) {
-        const url = `LeaveRequests/Submit?id=${id}`;
+        const url = `ApprovalRequests/Approve?id=${id}`;
         const options = {
             method: 'PATCH',
         };
@@ -86,33 +85,6 @@
                     }
                 }
                 displayTableBody();
-                //console.log('Отримані дані:', data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
-    function Cancel(id) {
-
-        const url = `LeaveRequests/Cancel?id=${id}`;
-        const options = {
-            method: 'PATCH',
-        };
-        fetch(url, options)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-            })
-            .then(data => {
-                for (let i = 0; i < requests.length; i++) {
-                    if (requests[i].ID === id) {
-                        requests[i].Status = "Cancel";
-                        break;
-                    }
-                }
-                displayTableBody();
-                //console.log('Отримані дані:', data);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -122,7 +94,6 @@
     function sortById() {
         if (currentSorting === "IDAscending") {
             currentSorting = "IDDescending";
-            //requests.sort((a, b) => b.ID - a.ID);
             requests.reverse();
         } else {
             currentSorting = "IDAscending";
@@ -134,11 +105,10 @@
     function sortByReason() {
         if (currentSorting === "ReasonAscending") {
             currentSorting = "ReasonDescending";
-            //requests.sort((a, b) => b.AbsenceReason.localeCompare(a.AbsenceReason));
             requests.reverse();
         } else {
             currentSorting = "ReasonAscending";
-            requests.sort((a, b) => a.AbsenceReason.localeCompare(b.AbsenceReason));
+            requests.sort((a, b) => a.LeaveRequest.localeCompare(b.AbsenceReason));
         }
         displayTableBody();
     }
@@ -146,7 +116,6 @@
     function sortByStartDate() {
         if (currentSorting === "StartAscending") {
             currentSorting = "StartDescending";
-            //requests.sort((a, b) => b.StartDate.localeCompare(a.StartDate));
             requests.reverse();
         } else {
             currentSorting = "StartAscending";
@@ -158,11 +127,10 @@
     function sortByEndDate() {
         if (currentSorting === "EndAscending") {
             currentSorting = "EndDescending";
-            //requests.sort((a, b) => b.EndDate.localeCompare(a.EndDate));
             requests.reverse();
         } else {
             currentSorting = "EndAscending";
-            requests.sort((a, b) => a.EndDate.localeCompare(b.EndDate));
+            requests.sort((a, b) => a.LeaveRequest.localeCompare(b.EndDate));
         }
         displayTableBody();
     }
@@ -170,7 +138,6 @@
     function sortByStatus() {
         if (currentSorting === "StatusAscending") {
             currentSorting = "StatusDescending";
-            //requests.sort((a, b) => b.Status.localeCompare(a.Status));
             requests.reverse();
         } else {
             currentSorting = 'StatusAscending';

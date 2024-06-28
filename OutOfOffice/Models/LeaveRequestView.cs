@@ -24,6 +24,6 @@ namespace OutOfOffice.Models
 
         [JsonConverter(typeof(EnumNameConverter<Status>))]
         public Status Status { get; init; }
-        public ApprovalRequestView? ApprovalRequest { get; set; }
+        public List<ApprovalRequestView>? ApprovalRequests { get; set; }
     }
 }
