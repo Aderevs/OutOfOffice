@@ -35,14 +35,12 @@ namespace OutOfOffice.Controllers
         public async Task<IActionResult> Index()
         {
             List<LeaveRequestView> leaveRequests;
-            if (User.IsInRole("Employee"))
-            {
-                var leaveRequestsDb = await _leaveRequestsRepository
-                    .GetAllByEmployeeId(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
-                leaveRequests = _mapper.Map<List<LeaveRequestView>>(leaveRequestsDb);
-                return View(leaveRequests);
-            }
-            return View();
+
+            var leaveRequestsDb = await _leaveRequestsRepository
+                .GetAllByEmployeeId(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+            leaveRequests = _mapper.Map<List<LeaveRequestView>>(leaveRequestsDb);
+            return View(leaveRequests);
+
         }
 
         public async Task<IActionResult> Edit([FromQuery] int id)
@@ -93,7 +91,7 @@ namespace OutOfOffice.Controllers
             var validResult = _dateValidator.Validate(model);
             if (ModelState.IsValid && validResult.IsValid)
             {
-                if(model.AbsenceReason == AbsenceReason.OtherInComment && model.Comment.IsNullOrEmpty())
+                if (model.AbsenceReason == AbsenceReason.OtherInComment && model.Comment.IsNullOrEmpty())
                 {
                     ModelState.AddModelError("Comment", "You have to leave a comment if you choose \"other option in comment\" as absence reason");
                     return View(model);
@@ -166,7 +164,7 @@ namespace OutOfOffice.Controllers
             {
                 throw new ArgumentException("No leave request with such id was found");
             }
-            if(requestDb.Status == Status.Cancel)
+            if (requestDb.Status == Status.Cancel)
             {
                 return BadRequest("It's already canceled");
             }
