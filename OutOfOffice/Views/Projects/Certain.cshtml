@@ -1,0 +1,46 @@
+﻿@model ProjectView
+@{
+    ViewData["Title"] = "Project info";
+}
+
+<div>
+    <div>
+        <h6>ID:</h6>
+        @Model.ID
+    </div>
+    <div>
+        <h6>Type:</h6>
+        @Model.ProjectType
+    </div>
+    <div>
+        <h6>Start:</h6>
+        @Model.StartDate
+    </div>
+    <div>
+        <h6>Emd:</h6>
+        @Model.EndDate
+    </div>
+    <div>
+        <h6>PM:</h6>
+        @Model.ProjectManager.FullName
+    </div>
+    <div>
+        <h6>Status:</h6>
+        @if (Model.IsActive)
+        {
+            <span>Active</span>
+        }
+        else
+        {
+            <span>Inactive</span>
+        }
+    </div>
+    <div>
+        <h6>Employees:</h6>
+        @foreach(var employee in Model.Employees)
+        {
+            <div>@employee.FullName</div>
+        }
+    </div>
+
+</div>
