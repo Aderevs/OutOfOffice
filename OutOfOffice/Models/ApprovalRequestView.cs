@@ -7,7 +7,7 @@ namespace OutOfOffice.Models
     public class ApprovalRequestView
     {
         public int ID { get; init; }
-        public Employee? Approver { get; set; }
+        public string? EmployeeName {  get; set; }
 
         [JsonConverter(typeof(EnumNameConverter<AbsenceReason>))]
         public AbsenceReason AbsenceReason { get; set; }

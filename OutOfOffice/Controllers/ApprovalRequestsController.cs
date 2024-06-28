@@ -12,13 +12,13 @@ namespace OutOfOffice.Controllers
     [Authorize]
     public class ApprovalRequestsController : Controller
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<ApprovalRequestsController> _logger;
         private readonly IMapper _mapper;
         private readonly ApprovalRequestsRepository _approvalRequestsRepository;
         private readonly EmployeesRepository _employeesRepository;
 
         public ApprovalRequestsController(
-            ILogger logger,
+            ILogger<ApprovalRequestsController> logger,
             IMapper mapper,
             ApprovalRequestsRepository approvalRequestsRepository,
             EmployeesRepository employeesRepository)
@@ -39,7 +39,7 @@ namespace OutOfOffice.Controllers
 
         public async Task<IActionResult> Certain([FromQuery] int id)
         {
-            var requestDb = await _approvalRequestsRepository.GetByIdIncludeLeaveAsync(id);
+            var requestDb = await _approvalRequestsRepository.GetByIdIncludeLeaveAndEmployeeAsync(id);
             if (requestDb is not null)
             {
                 var requestView = _mapper.Map<ApprovalRequestView>(requestDb);

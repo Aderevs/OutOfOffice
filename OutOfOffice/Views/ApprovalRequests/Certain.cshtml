@@ -11,6 +11,10 @@
             <input asp-for="ID" class="form-control" readonly />
         </div>
         <div class="form-group">
+            <label asp-for="EmployeeName" class="control-label"></label>
+            <input asp-for="EmployeeName" class="form-control" readonly />
+        </div>
+        <div class="form-group">
             <label asp-for="AbsenceReason" class="control-label"></label>
             <input asp-for="AbsenceReason" class="form-control" readonly />
         </div>
@@ -42,8 +46,16 @@
         <br />
         <br />
         <div class="form-group">
-            <button type="button" onclick="submitForm('Approve')" class="btn btn-success">Approve</button>
-            <button type="button" onclick="submitForm('Refuse')" class="btn btn-danger">Refuse</button>
+            @if (Model.Status == OutOfOffice.DbLogic.Status.New)
+            {
+                <button type="button" onclick="submitForm('Approve')" class="btn btn-success">Approve</button>
+                <button type="button" onclick="submitForm('Refuse')" class="btn btn-danger">Refuse</button>
+            }
+            else
+            {
+                <button type="button" onclick="submitForm('')" class="btn btn-primary">Ok</button>
+            }
+
         </div>
     </form>
 </div>
