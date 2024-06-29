@@ -3,7 +3,109 @@
     ViewData["Title"] = "Project info";
 }
 
-<div>
+<div class="col-md-4">
+    <h1 class="display-4">Project info</h1>
+    <form asp-action="EditOrCreateIfNotExists" enctype="multipart/form-data">
+        <div class="form-group">
+            <input asp-for="ID" class="form-control" readonly/>
+        </div>
+        <div class="form-group">
+            <label asp-for="ProjectType" class="control-label"></label>
+            @if (User.IsInRole("ProjectManager"))
+            {
+                <select asp-for="ProjectType" asp-items="Html.GetEnumSelectList<OutOfOffice.DbLogic.ProjectType>()" class="form-control"></select>
+                <span asp-validation-for="ProjectType" class="text-danger"></span>
+            }
+            else
+            {
+                <input asp-for="ProjectType" class="form-control" readonly />
+            }
+        </div>
+        <div class="form-group">
+            <label asp-for="ProjectManagerName" class="control-label"></label>
+            <input asp-for="ProjectManagerName" class="form-control" readonly />
+            <span asp-validation-for="ProjectManagerName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="StartDate" class="control-label"></label>
+            @if (User.IsInRole("ProjectManager"))
+            {
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            }
+            else
+            {
+                <input asp-for="StartDate" class="form-control" readonly />
+            }
+        </div>
+        <div class="form-group">
+            <label asp-for="EndDate" class="control-label"></label>
+            @if (User.IsInRole("ProjectManager"))
+            {
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            }
+            else
+            {
+                <input asp-for="EndDate" class="form-control" readonly />
+            }
+
+        </div>
+        <div class="form-group">
+            <label asp-for="Comment" class="control-label"></label>
+            @if (User.IsInRole("ProjectManager"))
+            {
+                <input asp-for="Comment" class="form-control" />
+                <span asp-validation-for="Comment" class="text-danger"></span>
+            }
+            else
+            {
+                <input asp-for="Comment" class="form-control" readonly />
+            }
+        </div>
+
+        <br />
+        @if (User.IsInRole("ProjectManager"))
+        {
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        }
+
+    </form>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* <div>
     <div>
         <h6>ID:</h6>
         @Model.ID
@@ -22,7 +124,7 @@
     </div>
     <div>
         <h6>PM:</h6>
-        @Model.ProjectManager.FullName
+        @Model.ProjectManagerName
     </div>
     <div>
         <h6>Status:</h6>
@@ -37,10 +139,10 @@
     </div>
     <div>
         <h6>Employees:</h6>
-        @foreach(var employee in Model.Employees)
+        @foreach(var name in Model.EmployeesNames)
         {
-            <div>@employee.FullName</div>
+            <div>@name</div>
         }
     </div>
 
-</div>
+</div> *@

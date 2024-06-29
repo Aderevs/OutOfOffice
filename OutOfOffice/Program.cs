@@ -30,7 +30,7 @@ namespace OutOfOffice
             builder.Services.AddScoped<LeaveRequestsRepository>();
             builder.Services.AddScoped<ApprovalRequestsRepository>();
             builder.Services.AddScoped<ProjectsRepository>();
-            builder.Services.AddSingleton<LeaveRequestDateValidator>();
+            builder.Services.AddSingleton<DateValidator>();
 
             var app = builder.Build();
 

@@ -3,7 +3,10 @@
     ViewData["Title"] = "Projects";
     var projectsJson = System.Text.Json.JsonSerializer.Serialize(Model);
 }
-
+@if (User.IsInRole("ProjectManager"))
+{
+    <a asp-action="Create" class="btn btn-primary">Add new project +</a>
+}
 <table class="tables">
     <thead id="projects-table-head">
         <tr>
@@ -11,7 +14,10 @@
             <th><button class="btn" onclick="sortByType()">Type</button></th>
             <th><button class="btn" onclick="sortByStartDate()">Start</button></th>
             <th><button class="btn" onclick="sortByEndDate()">End</button></th>
-            <th><button class="btn" onclick="sortByPMName()">PM</button></th>
+            @if (!User.IsInRole("ProjectManager"))
+            {
+                <th><button class="btn" onclick="sortByPMName()">PM</button></th>
+            }
             <th><button class="btn" onclick="sortByActiveStatus()">Is Active</button></th>
         </tr>
     </thead>
@@ -27,33 +33,21 @@
         tableBody.innerHTML = "";
         projects.forEach(function (project) {
             let row = document.createElement("tr");
-    @* let activeSubmit = '';
-                let activeCancel = '';
-                switch (request.Status) {
-                case 'New':
-                activeCancel = 'active';
-                activeSubmit = 'active';
-                break;
-                case 'Submit':
-                activeCancel = 'active';
-                activeSubmit = 'disabled';
-                break;
-                case 'Cancel':
-                activeCancel = 'disabled';
-                activeSubmit = 'disabled';
-                break;
-                default:
-                break;
-                } *@
-
-                row.innerHTML =
-            `<td>${project.ID}</td>
-                <td>${project.ProjectType}</td>
-                <td>${project.StartDate}</td>
-                <td>${project.EndDate}</td>
-                <td>${project.ProjectManager.FullName}</td>
-                <td>${project.IsActive}</td>
-                    <td><a href="https://localhost:7129/Projects/Certain?id=${project.ID}">Details</a></td>`;
+            row.innerHTML =
+                `<td>${project.ID}</td>
+                    <td>${project.ProjectType}</td>
+                    <td>${project.StartDate}</td>
+                    <td>${project.EndDate}</td>
+                    @if (!User.IsInRole("ProjectManager"))
+                    {
+                        <td>${project.ProjectManagerName}</td>
+                    }
+                    <td>
+                        ${project.IsActive}
+                        <br/>
+                        <button class="btn btn-warning" onclick="CangeStatus(${project.ID})">CangeStatus</button>
+                    </td>
+                        <td><a href="https://localhost:7129/Projects/Certain?id=${project.ID}">Details</a></td>`;
             tableBody.appendChild(row);
         });
     }
@@ -101,18 +95,18 @@
             projects.reverse();
         } else {
             currentSorting = "EndAscending";
-            projects.sort((a, b) => a.LeaveRequest.localeCompare(b.EndDate));
+            projects.sort((a, b) => a.EndDate.localeCompare(b.EndDate));
         }
         displayTableBody();
     }
 
-    function sortByPMName(){
+    function sortByPMName() {
         if (currentSorting === "PMNameAscending") {
             currentSorting = "PMNameDescending";
             projects.reverse();
         } else {
             currentSorting = "PMNameAscending";
-            projects.sort((a, b) => a.ProjectManager.FullName.localeCompare(b.ProjectManager.FullName));
+            projects.sort((a, b) => a.ProjectManagerName.localeCompare(b.ProjectManagerName));
         }
         displayTableBody();
     }
@@ -126,5 +120,30 @@
             projects.sort((a, b) => a.IsActive - b.IsActive);
         }
         displayTableBody();
+    }
+    function CangeStatus(id) {
+        const url = `Projects/ChangeStatus?id=${id}`;
+        const options = {
+            method: 'PATCH',
+        };
+        fetch(url, options)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                for (let i = 0; i < projects.length; i++) {
+                    if (projects[i].ID === id) {
+                        projects[i].IsActive = data;
+                        break;
+                    }
+                }
+                displayTableBody();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 </script>

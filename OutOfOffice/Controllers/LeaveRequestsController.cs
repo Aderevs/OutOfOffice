@@ -17,13 +17,13 @@ namespace OutOfOffice.Controllers
         private readonly LeaveRequestsRepository _leaveRequestsRepository;
         private readonly EmployeesRepository _employeesRepository;
         private readonly ApprovalRequestsRepository _approvalRequestsRepository;
-        private readonly LeaveRequestDateValidator _dateValidator;
+        private readonly DateValidator _dateValidator;
         public LeaveRequestsController(
             IMapper mapper,
             LeaveRequestsRepository leaveRequestsRepository,
             EmployeesRepository employeesRepository,
             ApprovalRequestsRepository approvalRequestsRepository,
-            LeaveRequestDateValidator dateValidator)
+            DateValidator dateValidator)
         {
             _leaveRequestsRepository = leaveRequestsRepository;
             _mapper = mapper;

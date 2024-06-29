@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace OutOfOffice.Models
 {
-    public class LeaveRequestView
+    public class LeaveRequestView : IDateRange
     {
         public int ID { get; init; }
         public Employee? Employee { get; set; }

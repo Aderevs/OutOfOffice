@@ -18,7 +18,9 @@ namespace OutOfOffice
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.LeaveRequest.EndDate))
                 .ForMember(dest => dest.LeaveComment, opt => opt.MapFrom(src => src.LeaveRequest.Comment));
 
-            CreateMap<Project, ProjectView>();
+            CreateMap<Project, ProjectView>()
+                .ForMember(dest => dest.ProjectManagerName, opt => opt.MapFrom(src => src.ProjectManager.FullName))
+                .ForMember(dest => dest.EmployeesNames, opt => opt.MapFrom(src => src.Employees.Select(employee => employee.FullName)));
 
             CreateMap<EmployeeView, Employee>();
             CreateMap<LeaveRequestView, LeaveRequest>();
