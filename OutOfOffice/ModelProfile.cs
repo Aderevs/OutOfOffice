@@ -20,7 +20,11 @@ namespace OutOfOffice
 
             CreateMap<Project, ProjectView>()
                 .ForMember(dest => dest.ProjectManagerName, opt => opt.MapFrom(src => src.ProjectManager.FullName))
-                .ForMember(dest => dest.EmployeesNames, opt => opt.MapFrom(src => src.Employees.Select(employee => employee.FullName)));
+                .ForMember(dest => dest.EmployeesIds, opt => opt.MapFrom(src => src.Employees.Select(employee => employee.ID.ToString())))
+                .ForMember(dest => dest.EmployeesIdsNames, opt => opt.MapFrom(src =>
+                src.Employees != null ? ToDictionary(src.Employees) : null));
+
+
 
             CreateMap<EmployeeView, Employee>();
             CreateMap<LeaveRequestView, LeaveRequest>();
@@ -36,6 +40,16 @@ namespace OutOfOffice
                 .ForMember(dest => dest.HasPhoto, opt => opt.MapFrom(src =>
                     src.Photo != null));
         }
-
+        private Dictionary<int, string> ToDictionary(List<Employee> employees)
+        {
+            var result = new Dictionary<int, string>();
+            foreach (var employee in employees)
+            {
+                var id = employee.ID;
+                var name = employee.FullName;
+                result[id] = name;
+            }
+            return result;
+        }
     }
 }

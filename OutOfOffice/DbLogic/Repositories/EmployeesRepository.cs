@@ -64,6 +64,18 @@ namespace OutOfOffice.DbLogic.Repositories
                 .FirstOrDefaultAsync(request => request.ID == requestId);
             return request.Employee;
         }
+        public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
+        {
+            return await _context.Employees
+                .Where(employee => employee.Position == Position.Employee)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Employee>> GetAllByRageOfIdsAsync(IEnumerable<int> ids)
+        {
+            return await _context.Employees
+                .Where(employee=> ids.Contains(employee.ID))
+                .ToListAsync();
+        }
         public async Task AddAsync(Employee employee)
         {
             _context.Employees.Add(employee);

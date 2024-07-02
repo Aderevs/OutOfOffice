@@ -58,6 +58,14 @@ namespace OutOfOffice.DbLogic.Repositories
             return await _context.Projects.FindAsync(id);
 #pragma warning restore CS8603 // Possible null reference return.
         }
+        public async Task<Project> GetByIdIncludeEmployeesOrDefaultAsync(int id)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return await _context.Projects
+                .Include(project => project.Employees)
+                .FirstOrDefaultAsync(project => project.ID == id);
+#pragma warning restore CS8603 // Possible null reference return.
+        }
         public async Task AddAsync(Project project)
         {
             _context.Projects.Add(project);

@@ -44,8 +44,12 @@
                     }
                     <td>
                         ${project.IsActive}
+                    @if (User.IsInRole("ProjectManager"))
+                    {
                         <br/>
                         <button class="btn btn-warning" onclick="CangeStatus(${project.ID})">CangeStatus</button>
+                    }
+    
                     </td>
                         <td><a href="https://localhost:7129/Projects/Certain?id=${project.ID}">Details</a></td>`;
             tableBody.appendChild(row);
