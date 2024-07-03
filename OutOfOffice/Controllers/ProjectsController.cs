@@ -146,7 +146,7 @@ namespace OutOfOffice.Controllers
                         var employeesToAdd = await _employeesRepository.GetAllByRageOfIdsAsync(employeeIdsToAdd);
                         projectDb.Employees.AddRange(employeesToAdd);
                         var employeesToRemove = await _employeesRepository.GetAllByRageOfIdsAsync(employeeIdsToRemove);
-                        foreach( var employee in employeesToRemove)
+                        foreach (var employee in employeesToRemove)
                         {
                             projectDb.Employees.Remove(employee);
                         }

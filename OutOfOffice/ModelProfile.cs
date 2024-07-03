@@ -36,6 +36,7 @@ namespace OutOfOffice
                     !src.PeoplePartnerId.IsNullOrEmpty() ? int.Parse(src.PeoplePartnerId) : (int?)null))
                 .ForMember(dest => dest.Photo, opt => opt.Ignore());
             CreateMap<Employee, EmployeeEditBinding>()
+                .ForMember(dest => dest.ProjectsIds, opt => opt.MapFrom(src => src.Projects.Select(project => project.ID.ToString())))
                 .ForMember(dest => dest.Photo, opt => opt.Ignore())
                 .ForMember(dest => dest.HasPhoto, opt => opt.MapFrom(src =>
                     src.Photo != null));

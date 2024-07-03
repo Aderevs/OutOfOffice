@@ -8,28 +8,42 @@ using System.Security.Claims;
 
 namespace OutOfOffice.Controllers
 {
-    [Authorize(Roles = "Administrator,HRManager")]
+    [Authorize(Roles = "Administrator,HRManager,ProjectManager")]
     public class EmployeesController : Controller
     {
-        private readonly EmployeesRepository _employeesRepository;
         private readonly IMapper _mapper;
+        private readonly EmployeesRepository _employeesRepository;
+        private readonly ProjectsRepository _projectsRepository;
 
-        public EmployeesController(EmployeesRepository employeesRepository, IMapper mapper)
+        public EmployeesController(
+            IMapper mapper,
+            EmployeesRepository employeesRepository,
+            ProjectsRepository projectsRepository)
         {
-            _employeesRepository = employeesRepository;
             _mapper = mapper;
+            _employeesRepository = employeesRepository;
+            _projectsRepository = projectsRepository;
         }
 
+        [Authorize(Roles = "ProjectManager,HRManager")]
         public async Task<IActionResult> Index()
         {
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            IEnumerable<Employee> employeesDb;
             if (User.IsInRole("HRManager"))
             {
-                var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-                var employeesDb = await _employeesRepository.GetAllSubordinateEmployeesByHRIdAsync(currentUserId);
-                var employees = _mapper.Map<List<EmployeeView>>(employeesDb);
-                return View(employees);
+                employeesDb = await _employeesRepository.GetAllSubordinateEmployeesByHRIdAsync(currentUserId);
             }
-            return View();
+            else if (User.IsInRole("ProjectManager"))
+            {
+                employeesDb = await _employeesRepository.GetAllSubordinateEmployeesByPMIdAsync(currentUserId);
+            }
+            else
+            {
+                employeesDb = [];
+            }
+            var employees = _mapper.Map<List<EmployeeView>>(employeesDb);
+            return View(employees);
         }
         [Authorize(Roles = "Administrator,HRManager")]
         public async Task<IActionResult> Create()
@@ -38,6 +52,7 @@ namespace OutOfOffice.Controllers
             EmployeeCreateBinding model = new(allHRs);
             return View(model);
         }
+
         [HttpPost]
         [Authorize(Roles = "Administrator,HRManager")]
         public async Task<IActionResult> Create(EmployeeCreateBinding model)
@@ -71,6 +86,7 @@ namespace OutOfOffice.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Roles = "Administrator,HRManager")]
         public async Task<IActionResult> ChangeStatus([FromQuery] int id)
         {
             var employeeOrNull = await _employeesRepository.GetByIdOrDefaultAsync(id);
@@ -82,12 +98,15 @@ namespace OutOfOffice.Controllers
             throw new ArgumentException("No employee with such id was found");
         }
 
+        [Authorize(Roles = "ProjectManager,HRManager")]
         public async Task<IActionResult> Edit(int id)
         {
-            var employeeDb = await _employeesRepository.GetByIdOrDefaultAsync(id);
-            if (employeeDb is Employee)
+            var employeeDb = await _employeesRepository.GetByIdIncludeProjectsOrDefaultAsync(id);
+            if (employeeDb is not null)
             {
                 var employeeView = _mapper.Map<EmployeeEditBinding>(employeeDb);
+                var allProjects = await _projectsRepository.GetAllAsync();
+                employeeView.SetProjectOptions(allProjects);
                 return View(employeeView);
             }
             else
@@ -101,13 +120,30 @@ namespace OutOfOffice.Controllers
         {
             if (ModelState.IsValid)
             {
-                var employeeDb = await _employeesRepository.GetByIdOrDefaultAsync(model.ID);
+                var employeeDb = await _employeesRepository.GetByIdIncludeProjectsOrDefaultAsync(model.ID);
                 if (employeeDb is not null)
                 {
                     employeeDb.FullName = model.FullName;
                     employeeDb.Subdivision = model.Subdivision;
                     employeeDb.Position = model.Position;
                     employeeDb.OutOfOfficeBalance = model.OutOfOfficeBalance;
+                    if (model.ProjectsIds != null)
+                    {
+                        var newProjectsIds = model.ProjectsIds.Select(id => int.Parse(id)).ToList();
+                        var projectIdsToRemove = employeeDb.Projects
+                            .Where(project => !newProjectsIds.Contains(project.ID))
+                            .Select(project => project.ID);
+                        var oldProjectsIds = employeeDb.Projects.Select(project => project.ID).ToList();
+                        var projectsIdsToAdd = newProjectsIds
+                            .Where(id => !oldProjectsIds.Contains(id));
+                        var projectsToAdd = await _projectsRepository.GetAllByRageOfIdsAsync(projectsIdsToAdd);
+                        employeeDb.Projects.AddRange(projectsToAdd);
+                        var projectsToRemove = await _projectsRepository.GetAllByRageOfIdsAsync(projectIdsToRemove);
+                        foreach (var project in projectsToRemove)
+                        {
+                            employeeDb.Projects.Remove(project);
+                        }
+                    }
                     if (model.Photo != null)
                     {
                         using (var memoryStream = new MemoryStream())

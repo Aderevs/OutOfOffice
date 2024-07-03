@@ -35,6 +35,14 @@ namespace OutOfOffice.DbLogic.Repositories
                 .ThenInclude(project => project.ProjectManager)
                 .FirstAsync(employee => employee.ID == id);
         }
+        public async Task<Employee> GetByIdIncludeProjectsOrDefaultAsync(int id)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return await _context.Employees
+                .Include(employee => employee.Projects)
+                .FirstOrDefaultAsync(employee => employee.ID == id);
+#pragma warning restore CS8603 // Possible null reference return.
+        }
         public async Task<IEnumerable<Employee>> GetProjectManagersForAllEmployeeProjectsAsync(int id)
         {
             return (IEnumerable<Employee>)await _context.Employees
@@ -51,11 +59,24 @@ namespace OutOfOffice.DbLogic.Repositories
                 .Where(employee => employee.Position == Position.HRManager)
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Employee>> GetAllSubordinateEmployeesByHRIdAsync(int HRId)
+        public async Task<IEnumerable<Employee>> GetAllSubordinateEmployeesByHRIdAsync(int hrId)
         {
             return await _context.Employees
-                .Where(employee => employee.PeoplePartnerId == HRId)
+                .Where(employee => employee.PeoplePartnerId == hrId)
                 .ToListAsync();
+        }
+        public async Task<IEnumerable<Employee>> GetAllSubordinateEmployeesByPMIdAsync(int pmId)
+        {
+            var projectsOfPm = await _context.Projects
+                .Include(project => project.Employees)
+                .Where(project => project.ProjectManagerId == pmId)
+                .ToListAsync();
+            List<Employee> subordinates = new List<Employee>();
+            foreach (var project in projectsOfPm)
+            {
+                subordinates.AddRange(project.Employees);
+            }
+            return subordinates.Distinct();
         }
         public async Task<Employee> GetByLeaveRequestIdAsync(int requestId)
         {
@@ -73,7 +94,7 @@ namespace OutOfOffice.DbLogic.Repositories
         public async Task<IEnumerable<Employee>> GetAllByRageOfIdsAsync(IEnumerable<int> ids)
         {
             return await _context.Employees
-                .Where(employee=> ids.Contains(employee.ID))
+                .Where(employee => ids.Contains(employee.ID))
                 .ToListAsync();
         }
         public async Task AddAsync(Employee employee)

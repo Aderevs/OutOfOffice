@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OutOfOffice.DbLogic;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,19 @@ namespace OutOfOffice.Models
 {
     public class EmployeeEditBinding
     {
+        public void SetProjectOptions(IEnumerable<Project> projects)
+        {
+            AllProjects = [];
+            foreach(var project in projects)
+            {
+                AllProjects.Add(
+                    new(
+                        project.ProjectType.ToString() + 
+                        " (" + project.StartDate.ToString() + " - " + project.EndDate.ToString() + ")",
+                        project.ID.ToString()));
+            }
+        }
+
         [Required]
         public int ID { get; set; }
         [Required]
@@ -26,5 +40,9 @@ namespace OutOfOffice.Models
 
         public bool HasPhoto { get; set; }
 
+        [Display(Name = "Projects")]
+        public List<string>? ProjectsIds { get; set; }
+
+        public List<SelectListItem>? AllProjects { get; set; }
     }
 }

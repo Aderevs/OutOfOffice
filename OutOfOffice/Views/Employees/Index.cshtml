@@ -3,7 +3,10 @@
     ViewData["Title"] = "Subordinate Employees";
     var employeesJson = System.Text.Json.JsonSerializer.Serialize(Model);
 }
-<a asp-action="Create" class="btn btn-primary">Add new employee +</a>
+@if (User.IsInRole("HRManager"))
+{
+    <a asp-action="Create" class="btn btn-primary">Add new employee +</a>
+}
 <table class="tables">
     <thead id="employees-table-head">
         <tr>
@@ -29,15 +32,19 @@
             let row = document.createElement("tr");
             row.innerHTML =
                 `<td>${employee.ID}</td>
-                <td>${employee.FullName}</td>
-                <td>${employee.Subdivision}</td>
-                <td>${employee.Position}</td>
-                <td>${employee.IsActive}
-                    <br/>
-                    <button class="btn btn-warning" onclick="CangeStatus(${employee.ID})">CangeStatus</button>
-                </td>
-                <td>${employee.OutOfOfficeBalance}</td>
-                <td><a href="https://localhost:7129/Employees/Edit?id=${employee.ID}">Edit</a></td>`;
+                    <td>${employee.FullName}</td>
+                    <td>${employee.Subdivision}</td>
+                    <td>${employee.Position}</td>
+                    <td>${employee.IsActive}
+                    @if (User.IsInRole("HRManager"))
+                    {
+                        <br/>
+                        <button class="btn btn-warning" onclick="CangeStatus(${employee.ID})">CangeStatus</button>
+                    }
+
+                    </td>
+                    <td>${employee.OutOfOfficeBalance}</td>
+                    <td><a href="https://localhost:7129/Employees/Edit?id=${employee.ID}">Details / Edit</a></td>`;
             tableBody.appendChild(row);
         });
     }

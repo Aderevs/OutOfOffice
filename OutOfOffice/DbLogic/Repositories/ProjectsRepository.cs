@@ -10,6 +10,10 @@ namespace OutOfOffice.DbLogic.Repositories
         {
             _context = context;
         }
+        public async Task<IEnumerable<Project>> GetAllAsync()
+        {
+            return await _context.Projects.ToListAsync();
+        }
         public async Task<IEnumerable<Project>> GetAllByEmployeeIdIncludePMAsync(int employeeId)
         {
             var employee = await _context.Employees
@@ -41,6 +45,12 @@ namespace OutOfOffice.DbLogic.Repositories
         {
             return await _context.Projects
                 .Where(project => project.ProjectManagerId == pmId)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Project>> GetAllByRageOfIdsAsync(IEnumerable<int> ids)
+        {
+            return await _context.Projects
+                .Where(project=> ids.Contains(project.ID))
                 .ToListAsync();
         }
         public async Task<Project> GetByIdIncludeEmployeesAndPMOrDefaultAsync(int id)

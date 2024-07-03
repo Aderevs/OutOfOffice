@@ -16,38 +16,82 @@
         </div>
         <div class="form-group">
             <label asp-for="FullName" class="control-label"></label>
-            <input asp-for="FullName" class="form-control" />
-            <span asp-validation-for="FullName" class="text-danger"></span>
+            @if (User.IsInRole("HRManager"))
+            {
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            }
+            else
+            {
+                <input asp-for="FullName" class="form-control" readonly />
+            }
+
         </div>
 
         <div class="form-group">
             <label asp-for="Subdivision" class="control-label"></label>
-            <select asp-for="Subdivision" asp-items="Html.GetEnumSelectList<Subdivision>()" class="form-control"></select>
-            <span asp-validation-for="Subdivision" class="text-danger"></span>
+            @if (User.IsInRole("HRManager"))
+            {
+                <select asp-for="Subdivision" asp-items="Html.GetEnumSelectList<Subdivision>()" class="form-control"></select>
+                <span asp-validation-for="Subdivision" class="text-danger"></span>
+            }
+            else
+            {
+                <input asp-for="Subdivision" class="form-control" readonly />
+            }
+
         </div>
 
         <div class="form-group">
             <label asp-for="Position" class="control-label"></label>
-            <select asp-for="Position" asp-items="Html.GetEnumSelectList<Position>()" class="form-control"></select>
-            <span asp-validation-for="Position" class="text-danger"></span>
+            @if (User.IsInRole("HRManager"))
+            {
+                <select asp-for="Position" asp-items="Html.GetEnumSelectList<Position>()" class="form-control"></select>
+                <span asp-validation-for="Position" class="text-danger"></span>
+            }
+            else
+            {
+                <input asp-for="Position" class="form-control" readonly />
+            }
+
         </div>
 
         <div class="form-group">
             <label asp-for="OutOfOfficeBalance" class="control-label"></label>
-            <input asp-for="OutOfOfficeBalance" class="form-control" />
-            <span asp-validation-for="OutOfOfficeBalance" class="text-danger"></span>
+            @if (User.IsInRole("HRManager"))
+            {
+                <input asp-for="OutOfOfficeBalance" class="form-control" />
+                <span asp-validation-for="OutOfOfficeBalance" class="text-danger"></span>
+            }
+            else
+            {
+                <input asp-for="OutOfOfficeBalance" class="form-control" readonly />
+            }
+
         </div>
 
         <br />
+        @if (User.IsInRole("HRManager"))
+        {
+            <div class="form-group">
+                <label asp-for="Photo">Upload new photo:</label>
+                <input asp-for="Photo" type="file" class="form-control" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
+        }
 
-        <div class="form-group">
-            <label asp-for="Photo">Upload new photo:</label>
-            <input asp-for="Photo" type="file" class="form-control" />
-            <span asp-validation-for="Photo" class="text-danger"></span>
-        </div>
 
         <br />
+        @if (User.IsInRole("ProjectManager"))
+        {
+            <div class="form-group">
+                <label asp-for="ProjectsIds"></label>
+                <select asp-for="ProjectsIds" asp-items="Model.AllProjects" class="form-control"></select>
+                <span asp-validation-for="ProjectsIds" class="text-danger"></span>
+            </div>
+        }
 
+        <br />
         <div class="form-group">
             <input type="submit" value="Save" class="btn btn-primary" />
         </div>
