@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace OutOfOffice.DbLogic.Repositories
@@ -102,6 +103,38 @@ namespace OutOfOffice.DbLogic.Repositories
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
         }
+        public async Task AddHRAndSetThemIdToAllEmployeesWithoutPeoplePartnerAsync(Employee hrManager)
+        {
+            if(hrManager.Position != Position.HRManager)
+            {
+                throw new ArgumentException("employee from parameters must has HRManager position");
+            }
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                _context.Employees.Add(hrManager);
+                await _context.SaveChangesAsync();
+                var newHrId = (await _context.Employees
+                    .SingleAsync(employee=>employee.Position==Position.HRManager))
+                    .ID;
+                var allEmployeesWithoutPeoplePartner = await _context.Employees
+                    .Where(employee=>employee.PeoplePartnerId ==null)
+                    .ToListAsync();
+                foreach(var employee in allEmployeesWithoutPeoplePartner)
+                {
+                    employee.PeoplePartnerId = newHrId;
+                    _context.Employees.Update(employee);
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
         public async Task UpdateAsync(Employee employee)
         {
             _context.Employees.Update(employee);
@@ -120,10 +153,6 @@ namespace OutOfOffice.DbLogic.Repositories
             employee.IsActive = !employee.IsActive;
             _context.Employees.Update(employee);
             await _context.SaveChangesAsync();
-        }
-        public async Task<bool> CheckIfExistsEmployeeWithSuchIdAsync(int id)
-        {
-            return await _context.Employees.AnyAsync(employee => employee.ID == id);
         }
     }
 }

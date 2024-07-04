@@ -45,6 +45,7 @@ namespace OutOfOffice.Controllers
             var employees = _mapper.Map<List<EmployeeView>>(employeesDb);
             return View(employees);
         }
+
         [Authorize(Roles = "Administrator,HRManager")]
         public async Task<IActionResult> Create()
         {
@@ -59,7 +60,10 @@ namespace OutOfOffice.Controllers
         {
             if (ModelState.IsValid)
             {
+                var anyHr = await _employeesRepository.CheckIfAnyHrExistsAsync();
+
                 var newEmployee = _mapper.Map<Employee>(model);
+
                 if (model.Photo != null)
                 {
                     using (var memoryStream = new MemoryStream())
@@ -72,15 +76,15 @@ namespace OutOfOffice.Controllers
                 newEmployee.Salt = Guid.NewGuid();
                 newEmployee.PasswordHash = PasswordHasher.HashPassword(model.Password + newEmployee.Salt.ToString());
                 newEmployee.IsActive = true;
-                await _employeesRepository.AddAsync(newEmployee);
+                if (!anyHr && newEmployee.Position == Position.HRManager)
+                {
+                    await _employeesRepository.AddHRAndSetThemIdToAllEmployeesWithoutPeoplePartnerAsync(newEmployee);
+                }
+                else
+                {
+                    await _employeesRepository.AddAsync(newEmployee);
+                }
                 return View("Success", "You successfully add new employee");
-            }
-            var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                  .Select(e => e.ErrorMessage)
-                                  .ToList();
-            foreach (var error in errors)
-            {
-                Console.WriteLine(error);
             }
             return View(model);
         }
@@ -164,6 +168,7 @@ namespace OutOfOffice.Controllers
                 return View(model);
             }
         }
+
         public async Task<IActionResult> GetPhotoById([FromQuery] int id)
         {
             var employee = await _employeesRepository.GetByIdOrDefaultAsync(id);

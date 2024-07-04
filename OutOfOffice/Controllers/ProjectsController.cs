@@ -72,7 +72,7 @@ namespace OutOfOffice.Controllers
             return View(projectView);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [Authorize(Roles = "ProjectManager")]
         public async Task<IActionResult> Edit(ProjectView model)
         {
@@ -91,7 +91,7 @@ namespace OutOfOffice.Controllers
                 }
                 return View(model);
             }
-        }
+        }*/
 
         [Authorize(Roles = "ProjectManager")]
         public async Task<IActionResult> Create()
@@ -172,6 +172,7 @@ namespace OutOfOffice.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Roles = "ProjectManager")]
         public async Task<IActionResult> ChangeStatus([FromQuery] int id)
         {
             var employeeOrNull = await _projectsRepository.GetByIdOrDefaultAsync(id);
