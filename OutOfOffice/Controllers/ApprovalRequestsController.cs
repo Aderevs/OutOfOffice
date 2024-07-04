@@ -9,7 +9,7 @@ using System.Transactions;
 
 namespace OutOfOffice.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="HRManager,ProjectManager")]
     public class ApprovalRequestsController : Controller
     {
         private readonly ILogger<ApprovalRequestsController> _logger;
