@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using OutOfOffice.DbLogic;
 using OutOfOffice.DbLogic.Repositories;
+using OutOfOffice.DbLogic.Repositories.Interfaces;
 
 namespace OutOfOffice
 {
@@ -26,10 +27,10 @@ namespace OutOfOffice
             {
                 cfg.AddProfile<ModelProfile>();
             });
-            builder.Services.AddScoped<EmployeesRepository>();
-            builder.Services.AddScoped<LeaveRequestsRepository>();
-            builder.Services.AddScoped<ApprovalRequestsRepository>();
-            builder.Services.AddScoped<ProjectsRepository>();
+            builder.Services.AddScoped<IEmployeesRepository, EmployeesRepository>();
+            builder.Services.AddScoped<ILeaveRequestsRepository, LeaveRequestsRepository>();
+            builder.Services.AddScoped<IApprovalRequestsRepository, ApprovalRequestsRepository>();
+            builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
             builder.Services.AddSingleton<DateValidator>();
 
             var app = builder.Build();

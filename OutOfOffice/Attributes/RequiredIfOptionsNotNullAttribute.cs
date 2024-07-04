@@ -1,7 +1,7 @@
-﻿using OutOfOffice.Models;
+﻿using OutOfOffice.Models.Bindings;
 using System.ComponentModel.DataAnnotations;
 
-namespace OutOfOffice
+namespace OutOfOffice.Attributes
 {
     public class RequiredIfOptionsNotNullAttribute : ValidationAttribute
     {

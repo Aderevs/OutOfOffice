@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using OutOfOffice.DbLogic;
-using OutOfOffice.DbLogic.Repositories;
+using OutOfOffice.DbLogic.Repositories.Interfaces;
 using OutOfOffice.Models;
 using System.Security.Claims;
 
@@ -14,15 +13,15 @@ namespace OutOfOffice.Controllers
     public class LeaveRequestsController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly LeaveRequestsRepository _leaveRequestsRepository;
-        private readonly EmployeesRepository _employeesRepository;
-        private readonly ApprovalRequestsRepository _approvalRequestsRepository;
+        private readonly ILeaveRequestsRepository _leaveRequestsRepository;
+        private readonly IEmployeesRepository _employeesRepository;
+        private readonly IApprovalRequestsRepository _approvalRequestsRepository;
         private readonly DateValidator _dateValidator;
         public LeaveRequestsController(
             IMapper mapper,
-            LeaveRequestsRepository leaveRequestsRepository,
-            EmployeesRepository employeesRepository,
-            ApprovalRequestsRepository approvalRequestsRepository,
+            ILeaveRequestsRepository leaveRequestsRepository,
+            IEmployeesRepository employeesRepository,
+            IApprovalRequestsRepository approvalRequestsRepository,
             DateValidator dateValidator)
         {
             _leaveRequestsRepository = leaveRequestsRepository;

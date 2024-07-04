@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace OutOfOffice.Models
+namespace OutOfOffice.Models.Bindings
 {
     public class AdminBinding
     {

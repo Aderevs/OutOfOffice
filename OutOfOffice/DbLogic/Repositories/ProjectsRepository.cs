@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OutOfOffice.DbLogic.Repositories.Interfaces;
 
 namespace OutOfOffice.DbLogic.Repositories
 {
-    public class ProjectsRepository
+    public class ProjectsRepository : IProjectsRepository
     {
         private readonly OutOfOfficeDbContext _context;
 
@@ -50,7 +51,7 @@ namespace OutOfOffice.DbLogic.Repositories
         public async Task<IEnumerable<Project>> GetAllByRageOfIdsAsync(IEnumerable<int> ids)
         {
             return await _context.Projects
-                .Where(project=> ids.Contains(project.ID))
+                .Where(project => ids.Contains(project.ID))
                 .ToListAsync();
         }
         public async Task<Project> GetByIdIncludeEmployeesAndPMOrDefaultAsync(int id)
@@ -92,10 +93,5 @@ namespace OutOfOffice.DbLogic.Repositories
             _context.Projects.Update(project);
             await _context.SaveChangesAsync();
         }
-        public async Task<bool> CheckIfExistsByIdAsync(int id)
-        {
-            return await _context.Projects.AnyAsync(project => project.ID == id);
-        }
-
     }
 }

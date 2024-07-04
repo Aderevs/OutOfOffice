@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OutOfOffice
+namespace OutOfOffice.Attributes
 {
     public class AllowedExtensionsAttribute : ValidationAttribute
     {

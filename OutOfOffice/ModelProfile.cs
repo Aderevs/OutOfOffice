@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using OutOfOffice.DbLogic;
 using OutOfOffice.Models;
+using OutOfOffice.Models.Bindings;
 
 namespace OutOfOffice
 {

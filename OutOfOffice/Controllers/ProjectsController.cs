@@ -3,7 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OutOfOffice.DbLogic;
-using OutOfOffice.DbLogic.Repositories;
+using OutOfOffice.DbLogic.Repositories.Interfaces;
 using OutOfOffice.Models;
 using System.Security.Claims;
 
@@ -14,14 +14,14 @@ namespace OutOfOffice.Controllers
     {
         private readonly IMapper _mapper;
         private readonly DateValidator _dateValidator;
-        private readonly ProjectsRepository _projectsRepository;
-        private readonly EmployeesRepository _employeesRepository;
+        private readonly IProjectsRepository _projectsRepository;
+        private readonly IEmployeesRepository _employeesRepository;
 
         public ProjectsController(
             IMapper mapper,
             DateValidator dateValidator,
-            ProjectsRepository projectsRepository,
-            EmployeesRepository employeesRepository)
+            IProjectsRepository projectsRepository,
+            IEmployeesRepository employeesRepository)
         {
             _mapper = mapper;
             _dateValidator = dateValidator;
@@ -71,27 +71,6 @@ namespace OutOfOffice.Controllers
             projectView.SetOptionsEmployees(allEmployees);
             return View(projectView);
         }
-
-        /*[HttpPost]
-        [Authorize(Roles = "ProjectManager")]
-        public async Task<IActionResult> Edit(ProjectView model)
-        {
-            var validResult = _dateValidator.Validate(model);
-            if (ModelState.IsValid && validResult.IsValid)
-            {
-                var projectDb = _mapper.Map<Project>(model);
-                await _projectsRepository.UpdateAsync(projectDb);
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                foreach (var error in validResult.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
-                return View(model);
-            }
-        }*/
 
         [Authorize(Roles = "ProjectManager")]
         public async Task<IActionResult> Create()

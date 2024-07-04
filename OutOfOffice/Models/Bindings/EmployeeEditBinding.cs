@@ -1,20 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OutOfOffice.Attributes;
 using OutOfOffice.DbLogic;
 using System.ComponentModel.DataAnnotations;
 
-namespace OutOfOffice.Models
+namespace OutOfOffice.Models.Bindings
 {
     public class EmployeeEditBinding
     {
         public void SetProjectOptions(IEnumerable<Project> projects)
         {
             AllProjects = [];
-            foreach(var project in projects)
+            foreach (var project in projects)
             {
                 AllProjects.Add(
                     new(
-                        project.ProjectType.ToString() + 
+                        project.ProjectType.ToString() +
                         " (" + project.StartDate.ToString() + " - " + project.EndDate.ToString() + ")",
                         project.ID.ToString()));
             }
@@ -35,7 +36,7 @@ namespace OutOfOffice.Models
         public int OutOfOfficeBalance { get; set; }
 
         [BindProperty]
-        [AllowedExtensions(new string[] { ".jpg", ".jpeg"/*, ".png", ".gif"*/ })]
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg"})]
         public IFormFile? Photo { get; set; }
 
         public bool HasPhoto { get; set; }

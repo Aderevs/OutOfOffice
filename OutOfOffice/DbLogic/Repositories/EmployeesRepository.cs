@@ -1,10 +1,11 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OutOfOffice.DbLogic.Repositories.Interfaces;
 
 namespace OutOfOffice.DbLogic.Repositories
 {
-    public class EmployeesRepository
+    public class EmployeesRepository : IEmployeesRepository
     {
         private readonly OutOfOfficeDbContext _context;
 
@@ -54,6 +55,7 @@ namespace OutOfOffice.DbLogic.Repositories
                     .Select(project => project.ProjectManager))
                 .ToListAsync();
         }
+
         public async Task<IEnumerable<Employee>> GetAllHRsAsync()
         {
             return await _context.Employees
@@ -105,7 +107,7 @@ namespace OutOfOffice.DbLogic.Repositories
         }
         public async Task AddHRAndSetThemIdToAllEmployeesWithoutPeoplePartnerAsync(Employee hrManager)
         {
-            if(hrManager.Position != Position.HRManager)
+            if (hrManager.Position != Position.HRManager)
             {
                 throw new ArgumentException("employee from parameters must has HRManager position");
             }
@@ -115,12 +117,12 @@ namespace OutOfOffice.DbLogic.Repositories
                 _context.Employees.Add(hrManager);
                 await _context.SaveChangesAsync();
                 var newHrId = (await _context.Employees
-                    .SingleAsync(employee=>employee.Position==Position.HRManager))
+                    .SingleAsync(employee => employee.Position == Position.HRManager))
                     .ID;
                 var allEmployeesWithoutPeoplePartner = await _context.Employees
-                    .Where(employee=>employee.PeoplePartnerId ==null)
+                    .Where(employee => employee.PeoplePartnerId == null)
                     .ToListAsync();
-                foreach(var employee in allEmployeesWithoutPeoplePartner)
+                foreach (var employee in allEmployeesWithoutPeoplePartner)
                 {
                     employee.PeoplePartnerId = newHrId;
                     _context.Employees.Update(employee);

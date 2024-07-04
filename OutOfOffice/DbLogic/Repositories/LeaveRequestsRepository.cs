@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OutOfOffice.DbLogic.Repositories.Interfaces;
 
 namespace OutOfOffice.DbLogic.Repositories
 {
-    public class LeaveRequestsRepository
+    public class LeaveRequestsRepository : ILeaveRequestsRepository
     {
         private readonly OutOfOfficeDbContext _context;
 

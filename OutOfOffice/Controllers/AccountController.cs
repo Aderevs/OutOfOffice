@@ -2,17 +2,17 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using OutOfOffice.DbLogic;
-using OutOfOffice.DbLogic.Repositories;
-using OutOfOffice.Models;
+using OutOfOffice.DbLogic.Repositories.Interfaces;
+using OutOfOffice.Models.Bindings;
 using System.Security.Claims;
 
 namespace OutOfOffice.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly EmployeesRepository _employeesRepository;
+        private readonly IEmployeesRepository _employeesRepository;
 
-        public AccountController(EmployeesRepository employeesRepository)
+        public AccountController(IEmployeesRepository employeesRepository)
         {
             _employeesRepository = employeesRepository;
         }

@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OutOfOffice.DbLogic.Repositories.Interfaces;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace OutOfOffice.DbLogic.Repositories
 {
-    public class ApprovalRequestsRepository
+    public class ApprovalRequestsRepository : IApprovalRequestsRepository
     {
         private readonly OutOfOfficeDbContext _context;
 

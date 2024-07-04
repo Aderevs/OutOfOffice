@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OutOfOffice.DbLogic;
-using OutOfOffice.DbLogic.Repositories;
+using OutOfOffice.DbLogic.Repositories.Interfaces;
 using OutOfOffice.Models;
+using OutOfOffice.Models.Bindings;
 using System.Security.Claims;
 
 namespace OutOfOffice.Controllers
@@ -12,13 +13,13 @@ namespace OutOfOffice.Controllers
     public class EmployeesController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly EmployeesRepository _employeesRepository;
-        private readonly ProjectsRepository _projectsRepository;
+        private readonly IEmployeesRepository _employeesRepository;
+        private readonly IProjectsRepository _projectsRepository;
 
         public EmployeesController(
             IMapper mapper,
-            EmployeesRepository employeesRepository,
-            ProjectsRepository projectsRepository)
+            IEmployeesRepository employeesRepository,
+            IProjectsRepository projectsRepository)
         {
             _mapper = mapper;
             _employeesRepository = employeesRepository;

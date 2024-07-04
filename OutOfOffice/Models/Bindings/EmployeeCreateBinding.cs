@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OutOfOffice.Attributes;
 using OutOfOffice.DbLogic;
 using System.ComponentModel.DataAnnotations;
 
-namespace OutOfOffice.Models
+namespace OutOfOffice.Models.Bindings
 {
     public class EmployeeCreateBinding
     {
@@ -36,7 +37,7 @@ namespace OutOfOffice.Models
         public string? PeoplePartnerId { get; set; }
 
         [BindProperty]
-        [AllowedExtensions(new string[] { ".jpg", ".jpeg"/*, ".png", ".gif"*/ })]
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg")]
         public IFormFile? Photo { get; set; }
 
         public bool HasPhoto { get; set; }

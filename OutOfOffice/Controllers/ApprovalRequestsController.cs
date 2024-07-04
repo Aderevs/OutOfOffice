@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using OutOfOffice.DbLogic.Repositories;
+using OutOfOffice.DbLogic.Repositories.Interfaces;
 using OutOfOffice.Models;
 using System.Security.Claims;
 using System.Transactions;
@@ -14,14 +14,14 @@ namespace OutOfOffice.Controllers
     {
         private readonly ILogger<ApprovalRequestsController> _logger;
         private readonly IMapper _mapper;
-        private readonly ApprovalRequestsRepository _approvalRequestsRepository;
-        private readonly EmployeesRepository _employeesRepository;
+        private readonly IApprovalRequestsRepository _approvalRequestsRepository;
+        private readonly IEmployeesRepository _employeesRepository;
 
         public ApprovalRequestsController(
             ILogger<ApprovalRequestsController> logger,
             IMapper mapper,
-            ApprovalRequestsRepository approvalRequestsRepository,
-            EmployeesRepository employeesRepository)
+            IApprovalRequestsRepository approvalRequestsRepository,
+            IEmployeesRepository employeesRepository)
         {
             _logger = logger;
             _mapper = mapper;

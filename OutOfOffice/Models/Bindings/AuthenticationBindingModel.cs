@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OutOfOffice.Models
+namespace OutOfOffice.Models.Bindings
 {
     public class AuthenticationBindingModel
     {
         [Required]
-        public string? FullName {  get; set; }
+        public string? FullName { get; set; }
 
         [Required]
         [UIHint("Password")]
