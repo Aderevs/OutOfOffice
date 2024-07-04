@@ -17,10 +17,6 @@ namespace OutOfOffice.Controllers
             _employeesRepository = employeesRepository;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
         public IActionResult SignIn()
         {
             return View();
@@ -39,7 +35,7 @@ namespace OutOfOffice.Controllers
                     if (isCorrectPassword)
                     {
                         await SignInAsync(employee);
-                        return Ok();//RedirectToAction("Index", "Tests");
+                        return RedirectToAction("Index", "Home");
                     }
                 }
                 ModelState.AddModelError("", "Wrong login or password");
@@ -59,6 +55,7 @@ namespace OutOfOffice.Controllers
             }
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> RegisterFirstAdmin(AdminBinding model) 
         {
@@ -89,11 +86,13 @@ namespace OutOfOffice.Controllers
             }
             return View(model);
         }
+
         public async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
         private async Task SignInAsync(Employee user)
         {
             string role = user.Position.ToString();

@@ -5,9 +5,10 @@ namespace OutOfOffice.Models
     public class AuthenticationBindingModel
     {
         [Required]
-        public string FullName {  get; set; }
+        public string? FullName {  get; set; }
 
-        [Required] 
-        public string Password { get; set; }
+        [Required]
+        [UIHint("Password")]
+        public string? Password { get; set; }
     }
 }
