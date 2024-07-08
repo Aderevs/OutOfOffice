@@ -3,7 +3,7 @@
     ViewData["Title"] = "Subordinate Employees";
     var employeesJson = System.Text.Json.JsonSerializer.Serialize(Model);
 }
-@if (User.IsInRole("HRManager"))
+@if (User.IsInRole("HRManager") || User.IsInRole("Administrator"))
 {
     <a asp-action="Create" class="btn btn-primary">Add new employee +</a>
 }
@@ -36,7 +36,7 @@
                     <td>${employee.Subdivision}</td>
                     <td>${employee.Position}</td>
                     <td>${employee.IsActive}
-                    @if (User.IsInRole("HRManager"))
+                    @if (User.IsInRole("HRManager") || User.IsInRole("Administrator"))
                     {
                         <br/>
                         <button class="btn btn-warning" onclick="CangeStatus(${employee.ID})">CangeStatus</button>

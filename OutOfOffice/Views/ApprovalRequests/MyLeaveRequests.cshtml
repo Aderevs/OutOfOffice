@@ -3,17 +3,17 @@
 @{
     ViewData["Title"] = "Approval requests";
     var requestsJson = System.Text.Json.JsonSerializer.Serialize(Model);
-
 }
 
- <table class="tables">
+<table class="tables">
     <thead id="approvalrequests-table-head">
         <tr>
             <th><button class="btn" onclick="sortById()">ID</button></th>
-            <th><button class="btn" onclick="sortByEmployeeName()">Employee</button></th>
             <th><button class="btn" onclick="sortByReason()">Reason</button></th>
+            <th><button class="btn" onclick="sortByLeaveId()">Leave ID</button></th>
             <th><button class="btn" onclick="sortByStartDate()">Start</button></th>
             <th><button class="btn" onclick="sortByEndDate()">End</button></th>
+            <th><button class="btn" onclick="sortByApproverName()">Approver</button></th>
             <th><button class="btn" onclick="sortByStatus()">Status</button></th>
         </tr>
     </thead>
@@ -29,68 +29,21 @@
         tableBody.innerHTML = "";
         requests.forEach(function (request) {
             let row = document.createElement("tr");
-            let activeSubmit = '';
-            let activeCancel = '';
-            switch (request.Status) {
-                case 'New':
-                    activeCancel = 'active';
-                    activeSubmit = 'active';
-                    break;
-                case 'Submit':
-                    activeCancel = 'active';
-                    activeSubmit = 'disabled';
-                    break;
-                case 'Cancel':
-                    activeCancel = 'disabled';
-                    activeSubmit = 'disabled';
-                    break;
-                default:
-                    break;
-            }
-            
+
             row.innerHTML =
                 `<td>${request.ID}</td>
-                <td>${request.EmployeeName}</td>
-                <td>${request.AbsenceReason}</td>
-                <td>${request.StartDate}</td>
-                <td>${request.EndDate}</td>
-                <td>
-                    ${request.Status}
-                    <br/>
-                    <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}>Approve</button>
-                </td>
-                    <td><a href="https://localhost:7129/ApprovalRequests/certain?id=${request.ID}">Details / Refuse</a></td>`;
+                    <td>${request.AbsenceReason}</td>
+                    <td>${request.LeaveID}</td>
+                    <td>${request.StartDate}</td>
+                    <td>${request.EndDate}</td>
+                    <td>${request.ApproverName}</td>
+                    <td>${request.Status}</td>
+                            <td><a href="https://localhost:7129/ApprovalRequests/ApprovalToMyLeaveRequest?id=${request.ID}">Details</a></td>`;
             tableBody.appendChild(row);
         });
     }
 
     displayTableBody();
-
-    function Submit(id) {
-        const url = `ApprovalRequests/Approve?id=${id}`;
-        const options = {
-            method: 'PATCH',
-        };
-        fetch(url, options)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-            })
-            .then(data => {
-
-                for (let i = 0; i < requests.length; i++) {
-                    if (requests[i].ID === id) {
-                        requests[i].Status = "Submit";
-                        break;
-                    }
-                }
-                displayTableBody();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
 
     function sortById() {
         if (currentSorting === "IDAscending") {
@@ -101,15 +54,25 @@
             requests.sort((a, b) => a.ID - b.ID);
         }
         displayTableBody();
-    }
 
-    function sortByEmployeeName() {
-        if (currentSorting === "EmployeeAscending") {
-            currentSorting = "ReasonDescending";
+    }function sortByLeaveId() {
+        if (currentSorting === "LeaveIDAscending") {
+            currentSorting = "LeaveIDDescending";
             requests.reverse();
         } else {
-            currentSorting = "EmployeeAscending";
-            requests.sort((a, b) => a.EmployeeName.localeCompare(b.EmployeeName));
+            currentSorting = "LeaveIDAscending";
+            requests.sort((a, b) => a.LeaveID - b.LeaveID);
+        }
+        displayTableBody();
+    }
+
+    function sortByApproverName() {
+        if (currentSorting === "ApproverAscending") {
+            currentSorting = "ApproverDescending";
+            requests.reverse();
+        } else {
+            currentSorting = "ApproverAscending";
+            requests.sort((a, b) => a.ApproverName.localeCompare(b.ApproverName));
         }
         displayTableBody();
     }

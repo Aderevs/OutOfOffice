@@ -20,10 +20,20 @@ namespace OutOfOffice.Models.Bindings
                         project.ID.ToString()));
             }
         }
+        public void SetHrOptions(IEnumerable<Employee> allHRs)
+        {
+            HROptions = [];
+            foreach (var hr in allHRs)
+            {
+                HROptions.Add(new(hr.FullName, hr.ID.ToString()));
+            }
+        }
 
         [Required]
         public int ID { get; set; }
+
         [Required]
+        [Display(Name ="Full name")]
         public string FullName { get; set; }
 
         [Required]
@@ -33,10 +43,16 @@ namespace OutOfOffice.Models.Bindings
         public Position Position { get; set; }
 
         [Required]
+        [Display(Name = "Out of office days balance")]
         public int OutOfOfficeBalance { get; set; }
 
+        [Display(Name = "HR")]
+        [RequiredIfOptionsNotNull]
+        public string? PeoplePartnerId { get; set; }
+        public List<SelectListItem>? HROptions { get; set; }
+
         [BindProperty]
-        [AllowedExtensions(new string[] { ".jpg", ".jpeg"})]
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg" })]
         public IFormFile? Photo { get; set; }
 
         public bool HasPhoto { get; set; }

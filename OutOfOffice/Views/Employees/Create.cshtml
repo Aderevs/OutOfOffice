@@ -1,4 +1,4 @@
-﻿@    using OutOfOffice.DbLogic
+﻿@using OutOfOffice.DbLogic
 @model EmployeeCreateBinding
 @{
     ViewData["Title"] = "Employee creator";
@@ -26,8 +26,16 @@
 
         <div class="form-group">
             <label asp-for="Position" class="control-label"></label>
-            <select asp-for="Position" asp-items="Html.GetEnumSelectList<Position>()" class="form-control"></select>
-            <span asp-validation-for="Position" class="text-danger"></span>
+            @if (User.IsInRole("Administrator"))
+            {
+                <select asp-for="Position" asp-items="Html.GetEnumSelectList<Position>()" class="form-control"></select>
+                <span asp-validation-for="Position" class="text-danger"></span>
+            }
+            else
+            {
+                <select asp-for="Position" asp-items="Html.GetEnumSelectList<Position>()" class="form-control" disabled></select>
+            }
+            
         </div>
 
         <div class="form-group">

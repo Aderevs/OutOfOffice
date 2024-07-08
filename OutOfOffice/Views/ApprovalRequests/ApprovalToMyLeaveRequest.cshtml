@@ -1,0 +1,35 @@
+﻿@model ApprovalRequestView
+
+@{
+    ViewData["Title"] = "Approval request";
+}
+
+<div>
+    <h4>ID:</h4>
+    <h6>@Model.ID</h6>
+    <h4>Reason:</h4>
+    <h6>@Model.AbsenceReason</h6>
+    <h4>Leave ID:</h4>
+    <h6>@Model.LeaveID</h6>
+    <h4>Start:</h4>
+    <h6>@Model.StartDate</h6>
+    <h4>End:</h4>
+    <h6>@Model.EndDate</h6>
+    <h4>Leave request comment:</h4>
+    @if (string.IsNullOrEmpty(Model.LeaveComment))
+    {
+        <h6>______________________________</h6>
+    }
+    <h6>@Model.LeaveComment</h6>
+    <h4>Approve status:</h4>
+    <h6>@Model.Status</h6>
+    <h4>Approver:</h4>
+    <h6>@Model.ApproverName</h6>
+    <h4>Approver comment:</h4>
+    @if (string.IsNullOrEmpty(Model.Comment))
+    {
+        <h6>______________________________</h6>
+    }
+    <h6>@Model.Comment</h6>
+
+</div>

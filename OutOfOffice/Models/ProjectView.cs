@@ -8,6 +8,7 @@ namespace OutOfOffice.Models
 {
     public class ProjectView : IDateRange
     {
+        private static readonly DateOnly today = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
         public ProjectView() { }
         public ProjectView(IEnumerable<Employee> allEmployees)
         {
@@ -25,15 +26,20 @@ namespace OutOfOffice.Models
 
         [Required]
         [JsonConverter(typeof(EnumNameConverter<ProjectType>))]
+        [Display(Name = "Project type")]
         public ProjectType ProjectType { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
-        public DateOnly StartDate { get; set; }
+        [Display(Name = "Start date")]
+        public DateOnly StartDate { get; set; } = today;
 
         [Required]
         [DataType(DataType.Date)]
-        public DateOnly EndDate { get; set; }
+        [Display(Name = "End date")]
+        public DateOnly EndDate { get; set; } = today;
+
+        [Display(Name = "Project Manager name")]
         public string? ProjectManagerName { get; set; }
         public string? Comment { get; set; }
         public bool IsActive { get; set; }

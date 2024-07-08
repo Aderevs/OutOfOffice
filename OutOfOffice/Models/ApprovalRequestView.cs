@@ -8,6 +8,8 @@ namespace OutOfOffice.Models
     {
         public int ID { get; init; }
         public string? EmployeeName {  get; set; }
+        public string? ApproverName {  get; set; }
+
 
         [JsonConverter(typeof(EnumNameConverter<AbsenceReason>))]
         public AbsenceReason AbsenceReason { get; set; }
@@ -20,6 +22,7 @@ namespace OutOfOffice.Models
         [DataType(DataType.Date)]
         public DateOnly EndDate { get; set; }
         public string? LeaveComment { get; set; }
+        public int LeaveID { get; set; }
 
         [JsonConverter(typeof(EnumNameConverter<Status>))]
         public Status Status { get; set; }

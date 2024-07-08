@@ -9,7 +9,7 @@ using System.Transactions;
 
 namespace OutOfOffice.Controllers
 {
-    [Authorize(Roles ="HRManager,ProjectManager")]
+    [Authorize]
     public class ApprovalRequestsController : Controller
     {
         private readonly ILogger<ApprovalRequestsController> _logger;
@@ -29,12 +29,31 @@ namespace OutOfOffice.Controllers
             _employeesRepository = employeesRepository;
         }
 
+        [Authorize(Roles = "HRManager,ProjectManager")]
         public async Task<IActionResult> Index()
         {
             var approverId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            var requestsDb = await _approvalRequestsRepository.GetAllRequestsOfApproverByIdAsync(approverId);
+            var requestsDb = await _approvalRequestsRepository.GetAllOfApproverByIdAsync(approverId);
             var requestsView = _mapper.Map<List<ApprovalRequestView>>(requestsDb);
             return View(requestsView);
+        }
+
+        public async Task<IActionResult> MyLeaveRequests()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var requestsDb = await _approvalRequestsRepository.GetAllForLeaveRequestsOfEmployeeByIdIncludeApproverAsync(userId);
+            var requestsView = _mapper.Map<List<ApprovalRequestView>>(requestsDb);
+            return View(requestsView);
+        }
+        public async Task<IActionResult> ApprovalToMyLeaveRequest([FromQuery] int id)
+        {
+            var requestDb = await _approvalRequestsRepository.GetByIdIncludeLeaveAndApproverAsync(id);
+            if (requestDb is not null)
+            {
+                var requestView = _mapper.Map<ApprovalRequestView>(requestDb);
+                return View(requestView);
+            }
+            throw new ArgumentException("No approval request with such id was found");
         }
 
         public async Task<IActionResult> Certain([FromQuery] int id)
@@ -49,6 +68,7 @@ namespace OutOfOffice.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "HRManager,ProjectManager")]
         public async Task<IActionResult> Approve(ApprovalRequestView model)
         {
             var requestDb = await _approvalRequestsRepository.GetByIdIncludeLeaveOrDefaultAsync(model.ID);
@@ -61,7 +81,7 @@ namespace OutOfOffice.Controllers
             {
                 throw new InvalidOperationException("No employee that has leave request with id such as in approval request was found");
             }
-           
+
             using (var transaction = new TransactionScope())
             {
                 try
@@ -73,7 +93,7 @@ namespace OutOfOffice.Controllers
                     requestDb.Status = DbLogic.Status.Submit;
                     var leaveDuration = (requestDb.LeaveRequest.EndDate.ToDateTime(new TimeOnly()) - requestDb.LeaveRequest.StartDate.ToDateTime(new TimeOnly())).Days;
                     employeeDb.OutOfOfficeBalance -= leaveDuration;
-                   
+
                     await _approvalRequestsRepository.UpdateAsync(requestDb);
                     await _employeesRepository.UpdateAsync(employeeDb);
                     transaction.Complete();
@@ -92,8 +112,10 @@ namespace OutOfOffice.Controllers
                 }
             }
         }
+
         [HttpPatch]
-        public async Task<IActionResult> Approve([FromQuery]int id)
+        [Authorize(Roles = "HRManager,ProjectManager")]
+        public async Task<IActionResult> Approve([FromQuery] int id)
         {
             var requestDb = await _approvalRequestsRepository.GetByIdIncludeLeaveOrDefaultAsync(id);
             if (requestDb is null)
@@ -132,7 +154,9 @@ namespace OutOfOffice.Controllers
                 }
             }
         }
+
         [HttpPost]
+        [Authorize(Roles = "HRManager,ProjectManager")]
         public async Task<IActionResult> Refuse(ApprovalRequestView model)
         {
             var requestDb = await _approvalRequestsRepository.GetByIdOrDefaultAsync(model.ID);

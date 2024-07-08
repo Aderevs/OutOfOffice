@@ -14,6 +14,8 @@ namespace OutOfOffice
             CreateMap<LeaveRequest, LeaveRequestView>();
             CreateMap<ApprovalRequest, ApprovalRequestView>()
                 .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => src.LeaveRequest.Employee.FullName))
+                .ForMember(dest => dest.LeaveID, opt => opt.MapFrom(src => src.LeaveRequest.ID))
+                .ForMember(dest => dest.ApproverName, opt => opt.MapFrom(src => src.Approver.FullName))
                 .ForMember(dest => dest.AbsenceReason, opt => opt.MapFrom(src => src.LeaveRequest.AbsenceReason))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.LeaveRequest.StartDate))
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.LeaveRequest.EndDate))
@@ -37,6 +39,7 @@ namespace OutOfOffice
                     !src.PeoplePartnerId.IsNullOrEmpty() ? int.Parse(src.PeoplePartnerId) : (int?)null))
                 .ForMember(dest => dest.Photo, opt => opt.Ignore());
             CreateMap<Employee, EmployeeEditBinding>()
+                .ForMember(dest => dest.PeoplePartnerId, opt => opt.MapFrom(src => src.PeoplePartnerId.ToString()))
                 .ForMember(dest => dest.ProjectsIds, opt => opt.MapFrom(src => src.Projects.Select(project => project.ID.ToString())))
                 .ForMember(dest => dest.Photo, opt => opt.Ignore())
                 .ForMember(dest => dest.HasPhoto, opt => opt.MapFrom(src =>

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿//#define DEBUG
+using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -136,16 +137,19 @@ namespace OutOfOffice.Controllers
             }
             else
             {
+#if DEBUG
                 var errorFields = ModelState.Where(x => x.Value.Errors.Any())
                                    .Select(x => new { x.Key, x.Value.Errors });
                 foreach (var errorField in errorFields)
                 {
                     Console.WriteLine(errorField);
                 }
+#endif
                 foreach (var error in validResult.Errors)
                 {
                     ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                 }
+                model.SetOptionsEmployees(await _employeesRepository.GetAllEmployeesAsync());
                 return View("Certain", model);
             }
         }

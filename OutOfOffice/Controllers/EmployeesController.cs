@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using OutOfOffice.DbLogic;
 using OutOfOffice.DbLogic.Repositories.Interfaces;
 using OutOfOffice.Models;
@@ -26,7 +27,6 @@ namespace OutOfOffice.Controllers
             _projectsRepository = projectsRepository;
         }
 
-        [Authorize(Roles = "ProjectManager,HRManager")]
         public async Task<IActionResult> Index()
         {
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -41,7 +41,7 @@ namespace OutOfOffice.Controllers
             }
             else
             {
-                employeesDb = [];
+                employeesDb = await _employeesRepository.GetAllAsync();
             }
             var employees = _mapper.Map<List<EmployeeView>>(employeesDb);
             return View(employees);
@@ -103,13 +103,14 @@ namespace OutOfOffice.Controllers
             throw new ArgumentException("No employee with such id was found");
         }
 
-        [Authorize(Roles = "ProjectManager,HRManager")]
         public async Task<IActionResult> Edit(int id)
         {
             var employeeDb = await _employeesRepository.GetByIdIncludeProjectsOrDefaultAsync(id);
             if (employeeDb is not null)
             {
                 var employeeView = _mapper.Map<EmployeeEditBinding>(employeeDb);
+                var allHRs = await _employeesRepository.GetAllHRsAsync();
+                employeeView.SetHrOptions(allHRs);
                 var allProjects = await _projectsRepository.GetAllAsync();
                 employeeView.SetProjectOptions(allProjects);
                 return View(employeeView);
@@ -132,6 +133,11 @@ namespace OutOfOffice.Controllers
                     employeeDb.Subdivision = model.Subdivision;
                     employeeDb.Position = model.Position;
                     employeeDb.OutOfOfficeBalance = model.OutOfOfficeBalance;
+                    if (!model.PeoplePartnerId.IsNullOrEmpty())
+                    {
+                        employeeDb.PeoplePartnerId = int.Parse(model.PeoplePartnerId);
+
+                    }
                     if (model.ProjectsIds != null)
                     {
                         var newProjectsIds = model.ProjectsIds.Select(id => int.Parse(id)).ToList();

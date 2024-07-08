@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OutOfOffice.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace OutOfOffice.Models.Bindings
@@ -20,7 +21,7 @@ namespace OutOfOffice.Models.Bindings
         public string PasswordConfirm { get; set; }
 
         [BindProperty]
-        [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png", ".gif" })]
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg"})]
         public IFormFile? Photo { get; set; }
     }
 }

@@ -12,11 +12,20 @@ namespace OutOfOffice.DbLogic.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<ApprovalRequest>> GetAllRequestsOfApproverByIdAsync(int approverId)
+        public async Task<IEnumerable<ApprovalRequest>> GetAllOfApproverByIdAsync(int approverId)
         {
             return await _context.ApprovalRequests
-                .Include(request => request.LeaveRequest)
+                .Include(approval => approval.LeaveRequest)
+                .ThenInclude(leave => leave.Employee)
                 .Where(request => request.ApproverId == approverId)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<ApprovalRequest>> GetAllForLeaveRequestsOfEmployeeByIdIncludeApproverAsync(int employeeId)
+        {
+            return await _context.ApprovalRequests
+                .Include(approval => approval.LeaveRequest)
+                .Include(approval => approval.Approver)
+                .Where(leave => leave.LeaveRequest.EmployeeId == employeeId)
                 .ToListAsync();
         }
         public async Task<ApprovalRequest> GetByIdIncludeLeaveAndEmployeeAsync(int approvalId)
@@ -25,7 +34,16 @@ namespace OutOfOffice.DbLogic.Repositories
             return await _context.ApprovalRequests
                 .Include(approval => approval.LeaveRequest)
                 .ThenInclude(leave => leave.Employee)
-                .FirstAsync(approval => approval.ID == approvalId);
+                .FirstOrDefaultAsync(approval => approval.ID == approvalId);
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+        public async Task<ApprovalRequest> GetByIdIncludeLeaveAndApproverAsync(int approvalId)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return await _context.ApprovalRequests
+                .Include(approval => approval.LeaveRequest)
+                .Include(approval => approval.Approver)
+                .FirstOrDefaultAsync(approval => approval.ID == approvalId);
 #pragma warning restore CS8603 // Possible null reference return.
         }
         public async Task<ApprovalRequest> GetByIdIncludeLeaveOrDefaultAsync(int approvalId)
@@ -87,5 +105,6 @@ namespace OutOfOffice.DbLogic.Repositories
             _context.ApprovalRequests.Update(request);
             await _context.SaveChangesAsync();
         }
+
     }
 }

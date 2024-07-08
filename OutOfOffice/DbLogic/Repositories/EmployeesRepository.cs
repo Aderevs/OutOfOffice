@@ -55,7 +55,6 @@ namespace OutOfOffice.DbLogic.Repositories
                     .Select(project => project.ProjectManager))
                 .ToListAsync();
         }
-
         public async Task<IEnumerable<Employee>> GetAllHRsAsync()
         {
             return await _context.Employees
@@ -120,7 +119,7 @@ namespace OutOfOffice.DbLogic.Repositories
                     .SingleAsync(employee => employee.Position == Position.HRManager))
                     .ID;
                 var allEmployeesWithoutPeoplePartner = await _context.Employees
-                    .Where(employee => employee.PeoplePartnerId == null)
+                    .Where(employee => employee.PeoplePartnerId == null && employee.ID != newHrId)
                     .ToListAsync();
                 foreach (var employee in allEmployeesWithoutPeoplePartner)
                 {
