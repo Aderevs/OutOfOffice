@@ -20,20 +20,23 @@ namespace OutOfOffice.Models.Bindings
         public int ID { get; set; }
 
         [Required]
-        [Display(Name ="Full name")]
+        [Display(Name ="Повне ім'я")]
         public string FullName { get; set; }
 
         [Required]
+        [Display(Name = "Пароль")]
         public string Password { get; set; }
 
         [Required]
+        [Display(Name = "Підрозділ")]
         public Subdivision Subdivision { get; set; }
 
         [Required]
+        [Display(Name = "Позиція")]
         public Position Position { get; set; }
 
         [Required]
-        [Display(Name = "Out of office days balance")]
+        [Display(Name = "Баланс на відсутність")]
         public int OutOfOfficeBalance { get; set; } = 20;
 
         [Display(Name = "HR")]

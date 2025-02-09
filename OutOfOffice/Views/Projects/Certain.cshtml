@@ -1,10 +1,10 @@
 ﻿@model ProjectView
 @{
-    ViewData["Title"] = "Project info";
+    ViewData["Title"] = "Інформація про проєкт";
 }
 
 <div class="col-md-4">
-    <h1 class="display-4">Project info</h1>
+    <h1 class="display-4">Інформація про проект</h1>
     <form asp-action="EditOrCreateIfNotExists" enctype="multipart/form-data">
         <div class="form-group">
             <label asp-for="ID" class="control-label"></label>
@@ -15,7 +15,7 @@
             <label asp-for="ProjectType" class="control-label"></label>
             @if (User.IsInRole("ProjectManager"))
             {
-                <select asp-for="ProjectType" asp-items="Html.GetEnumSelectList<OutOfOffice.DbLogic.ProjectType>()" class="form-control"></select>
+                <select asp-for="ProjectType" asp-items="EnumHelper.GetSelectListItemsFromEnum<OutOfOffice.DbLogic.ProjectType>()" class="form-control"></select>
                 <span asp-validation-for="ProjectType" class="text-danger"></span>
             }
             else
@@ -85,7 +85,7 @@
         @if (User.IsInRole("ProjectManager"))
         {
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Зберегти" class="btn btn-primary" />
             </div>
         }
         

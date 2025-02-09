@@ -33,17 +33,19 @@ namespace OutOfOffice.Models.Bindings
         public int ID { get; set; }
 
         [Required]
-        [Display(Name ="Full name")]
+        [Display(Name ="Повне ім'я")]
         public string FullName { get; set; }
 
         [Required]
+        [Display(Name ="Підрозділ")]
         public Subdivision Subdivision { get; set; }
 
         [Required]
+        [Display(Name ="Позиція")]
         public Position Position { get; set; }
 
         [Required]
-        [Display(Name = "Out of office days balance")]
+        [Display(Name = "Баланс неробочих днів")]
         public int OutOfOfficeBalance { get; set; }
 
         [Display(Name = "HR")]
@@ -52,12 +54,13 @@ namespace OutOfOffice.Models.Bindings
         public List<SelectListItem>? HROptions { get; set; }
 
         [BindProperty]
+        [Display(Name = "Фото")]
         [AllowedExtensions(new string[] { ".jpg", ".jpeg" })]
         public IFormFile? Photo { get; set; }
 
         public bool HasPhoto { get; set; }
 
-        [Display(Name = "Projects")]
+        [Display(Name = "Проєкти")]
         public List<string>? ProjectsIds { get; set; }
 
         public List<SelectListItem>? AllProjects { get; set; }

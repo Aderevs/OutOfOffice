@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OutOfOffice</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Головна</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -24,12 +24,12 @@
                             @if (!User.IsInRole("Employee"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">Працівники</a>
                                 </li>
                                 @if (!User.IsInRole("Administrator"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="ApprovalRequests" asp-action="Index">Approval requests</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="ApprovalRequests" asp-action="Index">Запити на затвердження</a>
                                     </li>
                                 }
 
@@ -37,14 +37,14 @@
                             @if (!User.IsInRole("Administrator"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">Projects</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">Проєкти</a>
                                 </li>
                             }
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="LeaveRequests" asp-action="Index">Leave requests</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="LeaveRequests" asp-action="Index">Запити на відсутність</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="ApprovalRequests" asp-action="MyLeaveRequests">Approvals to my leave requests</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="ApprovalRequests" asp-action="MyLeaveRequests">Затвердження моїх запитів на відсутність</a>
                             </li>
                         }
 

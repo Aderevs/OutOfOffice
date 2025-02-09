@@ -1,21 +1,21 @@
 ﻿@model List<EmployeeView>
 @{
-    ViewData["Title"] = "Subordinate Employees";
+    ViewData["Title"] = "Підлеглі працівники";
     var employeesJson = System.Text.Json.JsonSerializer.Serialize(Model);
 }
 @if (User.IsInRole("HRManager") || User.IsInRole("Administrator"))
 {
-    <a asp-action="Create" class="btn btn-primary">Add new employee +</a>
+    <a asp-action="Create" class="btn btn-primary">Додати нового працівника +</a>
 }
 <table class="tables">
     <thead id="employees-table-head">
         <tr>
             <th><button class="btn" onclick="sortById()">ID</button></th>
-            <th><button class="btn" onclick="sortByFullName()">Full Name</button></th>
-            <th><button class="btn" onclick="sortBySubdivision()">Subdivision</button></th>
-            <th><button class="btn" onclick="sortByPosition()">Position</button></th>
-            <th><button class="btn" onclick="sortByActiveStatus()">Is Active</button></th>
-            <th><button class="btn" onclick="sortByBalance()">Balance out of office</button></th>
+            <th><button class="btn" onclick="sortByFullName()">Повне ім'я</button></th>
+            <th><button class="btn" onclick="sortBySubdivision()">Підрозділ</button></th>
+            <th><button class="btn" onclick="sortByPosition()">Позиція</button></th>
+            <th><button class="btn" onclick="sortByActiveStatus()">Активний</button></th>
+            <th><button class="btn" onclick="sortByBalance()">Баланс відсутності</button></th>
         </tr>
     </thead>
     <tbody id="employees-table-body"></tbody>
@@ -30,21 +30,27 @@
         tableBody.innerHTML = "";
         employees.forEach(function (employee) {
             let row = document.createElement("tr");
+
+            let statusValue = 'деактивовеаний';
+            if(employee.IsActive){
+                statusValue = 'активний';
+            }
+                
             row.innerHTML =
                 `<td>${employee.ID}</td>
                     <td>${employee.FullName}</td>
                     <td>${employee.Subdivision}</td>
                     <td>${employee.Position}</td>
-                    <td>${employee.IsActive}
+                    <td>${statusValue}
                     @if (User.IsInRole("HRManager") || User.IsInRole("Administrator"))
                     {
                         <br/>
-                        <button class="btn btn-warning" onclick="CangeStatus(${employee.ID})">CangeStatus</button>
+                        <button class="btn btn-warning" onclick="CangeStatus(${employee.ID})">Змінити статус</button>
                     }
 
                     </td>
                     <td>${employee.OutOfOfficeBalance}</td>
-                    <td><a href="https://localhost:7129/Employees/Edit?id=${employee.ID}">Details / Edit</a></td>`;
+                    <td><a href="https://localhost:7129/Employees/Edit?id=${employee.ID}">Деталі / Редагувати</a></td>`;
             tableBody.appendChild(row);
         });
     }

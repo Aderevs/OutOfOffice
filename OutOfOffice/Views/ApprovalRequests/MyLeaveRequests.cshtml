@@ -9,12 +9,12 @@
     <thead id="approvalrequests-table-head">
         <tr>
             <th><button class="btn" onclick="sortById()">ID</button></th>
-            <th><button class="btn" onclick="sortByReason()">Reason</button></th>
-            <th><button class="btn" onclick="sortByLeaveId()">Leave ID</button></th>
-            <th><button class="btn" onclick="sortByStartDate()">Start</button></th>
-            <th><button class="btn" onclick="sortByEndDate()">End</button></th>
-            <th><button class="btn" onclick="sortByApproverName()">Approver</button></th>
-            <th><button class="btn" onclick="sortByStatus()">Status</button></th>
+            <th><button class="btn" onclick="sortByReason()">Причина</button></th>
+            <th><button class="btn" onclick="sortByLeaveId()">ID запиту на відсутність</button></th>
+            <th><button class="btn" onclick="sortByStartDate()">Початок</button></th>
+            <th><button class="btn" onclick="sortByEndDate()">Закінчення</button></th>
+            <th><button class="btn" onclick="sortByApproverName()">Апрувер</button></th>
+            <th><button class="btn" onclick="sortByStatus()">Статус</button></th>
         </tr>
     </thead>
     <tbody id="approvalrequests-table-body"></tbody>
@@ -29,6 +29,19 @@
         tableBody.innerHTML = "";
         requests.forEach(function (request) {
             let row = document.createElement("tr");
+            let translatedStatus = '';
+            switch (request.Status) {
+                case 'New':
+                    translatedStatus = 'Новий';
+                    break;
+                case 'Submit':
+                    translatedStatus = 'Затверджений';
+                    break;
+                case 'Cancel':
+                    translatedStatus = 'Відхилений';
+                    break;
+                default:
+                    break;
 
             row.innerHTML =
                 `<td>${request.ID}</td>
@@ -37,8 +50,8 @@
                     <td>${request.StartDate}</td>
                     <td>${request.EndDate}</td>
                     <td>${request.ApproverName}</td>
-                    <td>${request.Status}</td>
-                            <td><a href="https://localhost:7129/ApprovalRequests/ApprovalToMyLeaveRequest?id=${request.ID}">Details</a></td>`;
+                    <td>${translatedStatus}</td>
+                            <td><a href="https://localhost:7129/ApprovalRequests/ApprovalToMyLeaveRequest?id=${request.ID}">Деталі</a></td>`;
             tableBody.appendChild(row);
         });
     }

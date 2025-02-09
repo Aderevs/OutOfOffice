@@ -1,18 +1,35 @@
-﻿namespace OutOfOffice.DbLogic
+﻿using OutOfOffice.Attributes;
+
+namespace OutOfOffice.DbLogic
 {
+    
     public enum AbsenceReason
     {
+        [DisplayJson("Хвороба")]
         Disease,
+
+        [DisplayJson("Вітпустка")]
         Vacation,
+
+        [DisplayJson("Сімецні обставини")]
         FamilyCircumstances,
+
+        [DisplayJson("Освіта")]
         Education,
+
+        [DisplayJson("Інше в коментарях")]
         OtherInComment
     }
-    public enum Status
+    public enum LeaveRequestStatus
     {
+        [DisplayJson("Новий")]
         New,
+
+        [DisplayJson("Відправлений")]
         Submit,
-        Cancel
+
+        [DisplayJson("Cкасований")]
+        Canceled
     }
     public class LeaveRequest
     {
@@ -23,7 +40,7 @@
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
         public string? Comment { get; set; }
-        public Status Status { get; set; } = Status.New;
+        public LeaveRequestStatus Status { get; set; } = LeaveRequestStatus.New;
         public List<ApprovalRequest>? ApprovalRequests { get; set; }
     }
 }

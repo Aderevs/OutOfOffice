@@ -1,13 +1,28 @@
-﻿namespace OutOfOffice.DbLogic
+﻿using OutOfOffice.Attributes;
+
+namespace OutOfOffice.DbLogic
 {
     public enum ProjectType
     {
+        [DisplayJson("Web розробка")]
         WebDevelopment,
-        MobileAppDevelopment,
-        DesktopApplications,
+
+        [DisplayJson("Мобільний додаток")]
+        MobileApp,
+
+        [DisplayJson("ПК додаток")]
+        DesktopApp,
+
+        [DisplayJson("Аналітика даних та відображення")]
         DataAnalysisAndVisualization,
+
+        [DisplayJson("Машинне навчання")]
         MachineLearning,
+
+        [DisplayJson("Інтерне речей")]
         InternetOfThings,
+
+        [DisplayJson("Роботизація")]
         Robotics
     }
     public class Project

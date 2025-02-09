@@ -118,7 +118,7 @@ namespace OutOfOffice.Controllers
             {
                 throw new ArgumentException("No leave request with such id was found");
             }
-            if (requestDb.Status == Status.Submit || requestDb.Status == Status.Cancel)
+            if (requestDb.Status == LeaveRequestStatus.Submit || requestDb.Status == LeaveRequestStatus.Canceled)
             {
                 return BadRequest("Status can't submit when it's already submitted or canceled");
             }
@@ -137,7 +137,7 @@ namespace OutOfOffice.Controllers
                     {
                         ApproverId = projectManager.ID,
                         LeaveRequestId = id,
-                        Status = Status.New
+                        Status = ApprovalRequestStatus.New
 
                     });
             }
@@ -146,10 +146,10 @@ namespace OutOfOffice.Controllers
                 {
                     ApproverId = hrManager.ID,
                     LeaveRequestId = id,
-                    Status = Status.New
+                    Status = ApprovalRequestStatus.New
                 });
             await _approvalRequestsRepository.AddListAsTransactionAsync(approvals);
-            requestDb.Status = Status.Submit;
+            requestDb.Status = LeaveRequestStatus.Submit;
             await _leaveRequestsRepository.UpdateAsync(requestDb);
 
             return Ok();
@@ -163,12 +163,12 @@ namespace OutOfOffice.Controllers
             {
                 throw new ArgumentException("No leave request with such id was found");
             }
-            if (requestDb.Status == Status.Cancel)
+            if (requestDb.Status == LeaveRequestStatus.Canceled)
             {
                 return BadRequest("It's already canceled");
             }
             await _approvalRequestsRepository.DeleteByLeaveRequestId(id);
-            requestDb.Status = Status.Cancel;
+            requestDb.Status = LeaveRequestStatus.Canceled;
             await _leaveRequestsRepository.UpdateAsync(requestDb);
             return Ok();
         }

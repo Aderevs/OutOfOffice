@@ -7,21 +7,24 @@ namespace OutOfOffice.Models.Bindings
     public class AdminBinding
     {
         [Required]
+        [Display(Name = "Повне ім'я")]
         public string FullName { get; set; }
 
         [Required]
         [UIHint("Password")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z0-9\s!@#$%^&*()-_+=~`{}[\]:;""'<>,.?/\\|]{6,}$", ErrorMessage = "password is too easy")]
+        [Display(Name = "Пароль")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z0-9\s!@#$%^&*()-_+=~`{}[\]:;""'<>,.?/\\|]{6,}$", ErrorMessage = "пароль найдто легкий")]
         public string Password { get; set; }
 
         [Required]
-        [Compare("Password")]
-        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "паролі не співпадають")]
         [UIHint("Password")]
+        [Display(Name = "Підтвердити пароль")]
         public string PasswordConfirm { get; set; }
 
         [BindProperty]
-        [AllowedExtensions(new string[] { ".jpg", ".jpeg"})]
+        [Display(Name = "Оновити фото:")]
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg" })]
         public IFormFile? Photo { get; set; }
     }
 }

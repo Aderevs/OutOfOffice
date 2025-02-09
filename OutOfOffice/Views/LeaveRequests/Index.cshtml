@@ -1,20 +1,20 @@
 ﻿@model List<LeaveRequestView>
 
 @{
-    ViewData["Title"] = "Leave requests";
+    ViewData["Title"] = "Запити на відсутьність";
     var requestsJson = System.Text.Json.JsonSerializer.Serialize(Model);
 
 }
 
-<a asp-action="Create" class="btn btn-primary">Create new request +</a>
+<a asp-action="Create" class="btn btn-primary">Створити новий запит +</a>
 <table class="tables">
     <thead id="leaverequests-table-head">
         <tr>
             <th><button class="btn" onclick="sortById()">ID</button></th>
-            <th><button class="btn" onclick="sortByReason()">Reason</button></th>
-            <th><button class="btn" onclick="sortByStartDate()">Start</button></th>
-            <th><button class="btn" onclick="sortByEndDate()">End</button></th>
-            <th><button class="btn" onclick="sortByStatus()">Status</button></th>
+            <th><button class="btn" onclick="sortByReason()">Причина</button></th>
+            <th><button class="btn" onclick="sortByStartDate()">Початок</button></th>
+            <th><button class="btn" onclick="sortByEndDate()">Кінець</button></th>
+            <th><button class="btn" onclick="sortByStatus()">Статус</button></th>
         </tr>
     </thead>
     <tbody id="leaverequests-table-body"></tbody>
@@ -31,6 +31,7 @@
             let row = document.createElement("tr");
             let activeSubmit = '';
             let activeCancel = '';
+             let translatedStatus = '';
             switch (request.Status) {
                 case 'New':
                     activeCancel = 'active';
@@ -56,10 +57,10 @@
                 <td>
                     ${request.Status}
                     <br/>
-                    <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}>Submit</button>
-                    <button class="btn btn-danger" onclick="Cancel(${request.ID})" ${activeCancel}>Cancel</button>
+                    <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}>Відправити</button>
+                    <button class="btn btn-danger" onclick="Cancel(${request.ID})" ${activeCancel}>Відмінити</button>
                 </td>
-                    <td><a href="https://localhost:7129/LeaveRequests/Edit?id=${request.ID}">Details / Update</a></td>`;
+                    <td><a href="https://localhost:7129/LeaveRequests/Edit?id=${request.ID}">Деталі / Оновити</a></td>`;
             tableBody.appendChild(row);
         });
     }

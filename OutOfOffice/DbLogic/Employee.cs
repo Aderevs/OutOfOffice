@@ -1,22 +1,60 @@
-﻿namespace OutOfOffice.DbLogic
+﻿using OutOfOffice.Attributes;
+
+namespace OutOfOffice.DbLogic
 {
+    //public enum Subdivision
+    //{
+    //    WebDevelopment,
+    //    MobileAndDesktop,
+    //    DataScienceAndAnalysis,
+    //    IoTAndEmbeddedSystems,
+    //    ProjectManagementAndQualityAssurance,
+    //    HumanResourceManagement,
+    //    CompanySystemsAdministration
+    //}
     public enum Subdivision
     {
-        WebDevelopment,
-        MobileAndDesktop,
-        DataScienceAndAnalysis,
-        IoTAndEmbeddedSystems,
-        ProjectManagementAndQualityAssurance,
-        HumanResourceManagement,
-        CompanySystemsAdministration
+        [DisplayJson("Сервіс")]
+        Service,
+
+        [DisplayJson("Адміністрування та підтримка")]
+        AdministrationAndSupport,
+
+        [DisplayJson("Управління людськими ресурсами")]
+        HumanRecourceManagement,
+        
+        [DisplayJson("Маркетинг та продажі")]
+        MarketingAndSales
     }
     public enum Position
     {
+        [DisplayJson("Працівник")]
         Employee,
+
+        [DisplayJson("HR Менеджер")]
         HRManager,
+
+        [DisplayJson("Менеджер проєктів")]
         ProjectManager,
+
+        [DisplayJson("Адміністратор")]
         Administrator
     }
+
+    //public enum Subdivision
+    //{
+    //    Сервіс,
+    //    IT,
+    //    УправлінняЛюдськимиРесурсами,
+    //    МаркетингТаПродажі
+    //}
+    //public enum Position
+    //{
+    //    Працівник,
+    //    HRМенеджер,
+    //    МенеджерПроєктів,
+    //    Адміністратор
+    //}
     public class Employee
     {
         public int ID { get; init; }

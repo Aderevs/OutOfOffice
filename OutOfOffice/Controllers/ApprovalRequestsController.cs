@@ -90,7 +90,7 @@ namespace OutOfOffice.Controllers
                     {
                         requestDb.Comment = model.Comment;
                     }
-                    requestDb.Status = DbLogic.Status.Submit;
+                    requestDb.Status = DbLogic.ApprovalRequestStatus.Approved;
                     var leaveDuration = (requestDb.LeaveRequest.EndDate.ToDateTime(new TimeOnly()) - requestDb.LeaveRequest.StartDate.ToDateTime(new TimeOnly())).Days;
                     employeeDb.OutOfOfficeBalance -= leaveDuration;
 
@@ -132,7 +132,7 @@ namespace OutOfOffice.Controllers
             {
                 try
                 {
-                    requestDb.Status = DbLogic.Status.Submit;
+                    requestDb.Status = DbLogic.ApprovalRequestStatus.Approved;
                     var leaveDuration = (requestDb.LeaveRequest.EndDate.ToDateTime(new TimeOnly()) - requestDb.LeaveRequest.StartDate.ToDateTime(new TimeOnly())).Days;
                     employeeDb.OutOfOfficeBalance -= leaveDuration;
 
@@ -169,7 +169,7 @@ namespace OutOfOffice.Controllers
                 ModelState.AddModelError("Comment", "If you refuse request explain the reason in the comment");
                 return View("Certain", model);
             }
-            requestDb.Status = DbLogic.Status.Cancel;
+            requestDb.Status = DbLogic.ApprovalRequestStatus.Rejected;
             requestDb.Comment = model.Comment;
             await _approvalRequestsRepository.UpdateAsync(requestDb);
             return RedirectToAction("Index");

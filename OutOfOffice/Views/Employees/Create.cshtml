@@ -1,10 +1,10 @@
 ﻿@using OutOfOffice.DbLogic
 @model EmployeeCreateBinding
 @{
-    ViewData["Title"] = "Employee creator";
+    ViewData["Title"] = "Додавання співробітника";
 }
 <div class="col-md-4">
-    <h1 class="display-4">Create new employee user</h1>
+    <h1 class="display-4">Створити нового користувача-співробітника</h1>
     <form asp-action="Create" enctype="multipart/form-data">
         <div class="form-group">
             <label asp-for="FullName" class="control-label"></label>
@@ -60,7 +60,7 @@
         <br />
 
         <div class="form-group">
-            <input type="submit" value="Add" class="btn btn-primary" />
+            <input type="submit" value="Додати" class="btn btn-primary" />
         </div>
     </form>
 </div>

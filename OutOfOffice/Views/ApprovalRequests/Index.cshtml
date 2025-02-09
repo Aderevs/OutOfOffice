@@ -1,20 +1,20 @@
 ﻿@model List<ApprovalRequestView>
 
 @{
-    ViewData["Title"] = "Approval requests";
+    ViewData["Title"] = "Запити на затвердження";
     var requestsJson = System.Text.Json.JsonSerializer.Serialize(Model);
 
 }
 
- <table class="tables">
+<table class="tables">
     <thead id="approvalrequests-table-head">
         <tr>
             <th><button class="btn" onclick="sortById()">ID</button></th>
-            <th><button class="btn" onclick="sortByEmployeeName()">Employee</button></th>
-            <th><button class="btn" onclick="sortByReason()">Reason</button></th>
-            <th><button class="btn" onclick="sortByStartDate()">Start</button></th>
-            <th><button class="btn" onclick="sortByEndDate()">End</button></th>
-            <th><button class="btn" onclick="sortByStatus()">Status</button></th>
+            <th><button class="btn" onclick="sortByEmployeeName()">Працівник</button></th>
+            <th><button class="btn" onclick="sortByReason()">Причина</button></th>
+            <th><button class="btn" onclick="sortByStartDate()">Початок</button></th>
+            <th><button class="btn" onclick="sortByEndDate()">Закінчення</button></th>
+            <th><button class="btn" onclick="sortByStatus()">Статус</button></th>
         </tr>
     </thead>
     <tbody id="approvalrequests-table-body"></tbody>
@@ -30,7 +30,8 @@
         requests.forEach(function (request) {
             let row = document.createElement("tr");
             let activeSubmit = '';
-            let activeCancel = '';
+            //let activeCancel = '';
+            ..let translatedStatus = '';
             switch (request.Status) {
                 case 'New':
                     activeCancel = 'active';
@@ -47,7 +48,7 @@
                 default:
                     break;
             }
-            
+
             row.innerHTML =
                 `<td>${request.ID}</td>
                 <td>${request.EmployeeName}</td>
@@ -57,7 +58,7 @@
                 <td>
                     ${request.Status}
                     <br/>
-                    <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}>Approve</button>
+                    <button class="btn btn-success" onclick="Submit(${request.ID})" ${activeSubmit}>Погодити</button>
                 </td>
                     <td><a href="https://localhost:7129/ApprovalRequests/certain?id=${request.ID}">Details / Refuse</a></td>`;
             tableBody.appendChild(row);

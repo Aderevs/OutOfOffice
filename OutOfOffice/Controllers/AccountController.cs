@@ -65,7 +65,7 @@ namespace OutOfOffice.Controllers
                 {
                     FullName = model.FullName,
                     Salt = Guid.NewGuid(),
-                    Subdivision = Subdivision.CompanySystemsAdministration,
+                    Subdivision = Subdivision.AdministrationAndSupport,
                     Position = Position.Administrator,
                     IsActive = true,
                     OutOfOfficeBalance = 20,

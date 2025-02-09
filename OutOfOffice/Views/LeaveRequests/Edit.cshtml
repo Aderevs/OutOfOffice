@@ -1,9 +1,9 @@
 ﻿@model LeaveRequestView
 @{
-    ViewData["Title"] = "Edit request";
+    ViewData["Title"] = "Редагувати запит";
 }
 <div class="col-md-4">
-    <h1 class="display-4">Request editor</h1>
+    <h1 class="display-4">Редактор запитів</h1>
     <form asp-action="Edit">
         <div class="form-group">
             <label asp-for="ID" class="control-label"></label>
@@ -11,7 +11,7 @@
         </div>
         <div class="form-group">
             <label asp-for="AbsenceReason" class="control-label"></label>
-            <select asp-for="AbsenceReason" asp-items="Html.GetEnumSelectList<OutOfOffice.DbLogic.AbsenceReason>()" class="form-control"></select>
+            <select asp-for="AbsenceReason" asp-items="EnumHelper.GetSelectListItemsFromEnum<OutOfOffice.DbLogic.AbsenceReason>()" class="form-control"></select>
         </div>
         <div class="form-group">
             <label asp-for="StartDate" class="control-label"></label>
@@ -36,7 +36,7 @@
         <br />
         <br />
         <div class="form-group">
-            <input type="submit" value="Ok" class="btn btn-primary" />
+            <input type="submit" value="ОК" class="btn btn-primary" />
         </div>
     </form>
 

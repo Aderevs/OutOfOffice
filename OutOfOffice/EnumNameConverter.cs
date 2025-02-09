@@ -1,5 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.ComponentModel;
+using System.Reflection;
+using OutOfOffice.Attributes;
 
 namespace OutOfOffice
 {
@@ -23,7 +26,9 @@ namespace OutOfOffice
 
         public override void Write(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(value.ToString());
+            var field = value.GetType().GetField(value.ToString());
+            var translatedValue = field?.GetCustomAttribute<DisplayJsonAttribute>().GetValue();
+            writer.WriteStringValue(translatedValue);
         }
     }
 }

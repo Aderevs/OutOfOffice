@@ -25,26 +25,28 @@ namespace OutOfOffice.Models
         public int? ID { get; init; }
 
         [Required]
+        [Display(Name = "Тип проєкту")]
         [JsonConverter(typeof(EnumNameConverter<ProjectType>))]
-        [Display(Name = "Project type")]
         public ProjectType ProjectType { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
-        [Display(Name = "Start date")]
+        [Display(Name = "Дата старту")]
         public DateOnly StartDate { get; set; } = today;
 
         [Required]
         [DataType(DataType.Date)]
-        [Display(Name = "End date")]
+        [Display(Name = "Дата закінчення")]
         public DateOnly EndDate { get; set; } = today;
 
-        [Display(Name = "Project Manager name")]
+        [Display(Name = "Ім'я менеджеру проєкту")]
         public string? ProjectManagerName { get; set; }
+
+        [Display(Name = "Коментар")]
         public string? Comment { get; set; }
         public bool IsActive { get; set; }
 
-        [Display(Name = "Involved employees")]
+        [Display(Name = "Залучені працівники")]
         public List<string>? EmployeesIds { get; set; }
         public Dictionary<int, string>? EmployeesIdsNames { get; set; }
 

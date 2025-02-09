@@ -1,24 +1,24 @@
 ﻿@model List<ProjectView>
 @{
-    ViewData["Title"] = "Projects";
+    ViewData["Title"] = "Проєкти";
     var projectsJson = System.Text.Json.JsonSerializer.Serialize(Model);
 }
 @if (User.IsInRole("ProjectManager"))
 {
-    <a asp-action="Create" class="btn btn-primary">Add new project +</a>
+    <a asp-action="Create" class="btn btn-primary">Додати новий проєкт +</a>
 }
 <table class="tables">
     <thead id="projects-table-head">
         <tr>
             <th><button class="btn" onclick="sortById()">ID</button></th>
-            <th><button class="btn" onclick="sortByType()">Type</button></th>
-            <th><button class="btn" onclick="sortByStartDate()">Start</button></th>
-            <th><button class="btn" onclick="sortByEndDate()">End</button></th>
+            <th><button class="btn" onclick="sortByType()">Тип</button></th>
+            <th><button class="btn" onclick="sortByStartDate()">Поачток</button></th>
+            <th><button class="btn" onclick="sortByEndDate()">Закінчення</button></th>
             @if (!User.IsInRole("ProjectManager"))
             {
-                <th><button class="btn" onclick="sortByPMName()">PM</button></th>
+                <th><button class="btn" onclick="sortByPMName()">Менеджер</button></th>
             }
-            <th><button class="btn" onclick="sortByActiveStatus()">Is Active</button></th>
+            <th><button class="btn" onclick="sortByActiveStatus()">Статус</button></th>
         </tr>
     </thead>
     <tbody id="projects-table-body"></tbody>
@@ -32,6 +32,12 @@
     function displayTableBody() {
         tableBody.innerHTML = "";
         projects.forEach(function (project) {
+            let statusValue = '';
+            if(project.IsActive) {
+                statusValue = 'активний';
+            } else {
+                statusValue = 'неактивний';
+            }
             let row = document.createElement("tr");
             row.innerHTML =
                 `<td>${project.ID}</td>
@@ -43,15 +49,15 @@
                         <td>${project.ProjectManagerName}</td>
                     }
                     <td>
-                        ${project.IsActive}
+                        ${statusValue}
                     @if (User.IsInRole("ProjectManager"))
                     {
                         <br/>
-                        <button class="btn btn-warning" onclick="CangeStatus(${project.ID})">CangeStatus</button>
+                        <button class="btn btn-warning" onclick="CangeStatus(${project.ID})">Змінити статус</button>
                     }
     
                     </td>
-                        <td><a href="https://localhost:7129/Projects/Certain?id=${project.ID}">Details / Edit</a></td>`;
+                        <td><a href="https://localhost:7129/Projects/Certain?id=${project.ID}">Деталі / Редагувати</a></td>`;
             tableBody.appendChild(row);
         });
     }
