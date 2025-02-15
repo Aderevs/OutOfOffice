@@ -33,6 +33,10 @@ namespace OutOfOffice.Models.Bindings
         public int ID { get; set; }
 
         [Required]
+        [Display(Name = "Активний:")]
+        public bool IsActive { get; set; }
+
+        [Required]
         [Display(Name ="Повне ім'я")]
         public string FullName { get; set; }
 

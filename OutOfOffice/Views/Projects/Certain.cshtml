@@ -13,7 +13,8 @@
         </div>
         <div class="form-group">
             <label asp-for="ProjectType" class="control-label"></label>
-            @if (User.IsInRole("ProjectManager"))
+            @if (Model.IsActive &&
+                (User.IsInRole("ProjectManager")))
             {
                 <select asp-for="ProjectType" asp-items="EnumHelper.GetSelectListItemsFromEnum<OutOfOffice.DbLogic.ProjectType>()" class="form-control"></select>
                 <span asp-validation-for="ProjectType" class="text-danger"></span>
@@ -31,7 +32,8 @@
 
         <div class="form-group">
             <label asp-for="StartDate" class="control-label"></label>
-            @if (User.IsInRole("ProjectManager"))
+            @if (Model.IsActive &&
+                (User.IsInRole("ProjectManager")))
             {
                 <input asp-for="StartDate" class="form-control" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
@@ -43,7 +45,8 @@
         </div>
         <div class="form-group">
             <label asp-for="EndDate" class="control-label"></label>
-            @if (User.IsInRole("ProjectManager"))
+            @if (Model.IsActive &&
+                (User.IsInRole("ProjectManager")))
             {
                 <input asp-for="EndDate" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
@@ -56,7 +59,8 @@
         </div>
         <div class="form-group">
             <label asp-for="Comment" class="control-label"></label>
-            @if (User.IsInRole("ProjectManager"))
+            @if (Model.IsActive &&
+                (User.IsInRole("ProjectManager")))
             {
                 <input asp-for="Comment" class="form-control" />
                 <span asp-validation-for="Comment" class="text-danger"></span>
@@ -69,7 +73,8 @@
 
         <div class="form-group">
             <label asp-for="EmployeesIds" class="control-label"></label>
-            @if (User.IsInRole("ProjectManager"))
+            @if (Model.IsActive &&
+                (User.IsInRole("ProjectManager")))
             {
                 <select asp-for="EmployeesIds" asp-items="Model.AllEmployees" class="form-control"></select>
                 <span asp-validation-for="EmployeesIds" class="text-danger"></span>
@@ -82,7 +87,8 @@
         </div>
 
         <br />
-        @if (User.IsInRole("ProjectManager"))
+        @if (Model.IsActive &&
+            (User.IsInRole("ProjectManager")))
         {
             <div class="form-group">
                 <input type="submit" value="Зберегти" class="btn btn-primary" />

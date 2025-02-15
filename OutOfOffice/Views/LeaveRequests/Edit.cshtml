@@ -1,6 +1,9 @@
 ﻿@model LeaveRequestView
 @{
     ViewData["Title"] = "Редагувати запит";
+    string ifReadonly;
+    if (Model.Status != OutOfOffice.DbLogic.LeaveRequestStatus.New)
+        ifReadonly = "readonly";
 }
 <div class="col-md-4">
     <h1 class="display-4">Редактор запитів</h1>
@@ -11,32 +14,63 @@
         </div>
         <div class="form-group">
             <label asp-for="AbsenceReason" class="control-label"></label>
-            <select asp-for="AbsenceReason" asp-items="EnumHelper.GetSelectListItemsFromEnum<OutOfOffice.DbLogic.AbsenceReason>()" class="form-control"></select>
+            @if (Model.Status == OutOfOffice.DbLogic.LeaveRequestStatus.New)
+            {
+                <select asp-for="AbsenceReason" asp-items="EnumHelper.GetSelectListItemsFromEnum<OutOfOffice.DbLogic.AbsenceReason>()" class="form-control"></select>
+            }
+            else
+            {
+                <select asp-for="AbsenceReason" asp-items="EnumHelper.GetSelectListItemsFromEnum<OutOfOffice.DbLogic.AbsenceReason>()" class="form-control" readonly></select>
+            }
         </div>
         <div class="form-group">
             <label asp-for="StartDate" class="control-label"></label>
-            <input asp-for="StartDate" class="form-control" />
+            @if (Model.Status == OutOfOffice.DbLogic.LeaveRequestStatus.New)
+            {
+                <input asp-for="StartDate" class="form-control" />
+            }
+            else
+            {
+                <input asp-for="StartDate" class="form-control" readonly />
+            }
+
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="EndDate" class="control-label"></label>
-            <input asp-for="EndDate" class="form-control" />
+            @if (Model.Status == OutOfOffice.DbLogic.LeaveRequestStatus.New)
+            {
+                <input asp-for="EndDate" class="form-control" />
+            }
+            else
+            {
+                <input asp-for="EndDate" class="form-control" readonly />
+            }
+
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="Comment" class="control-label"></label>
-            <input asp-for="Comment" class="form-control" />
+            @if (Model.Status == OutOfOffice.DbLogic.LeaveRequestStatus.New)
+            {
+                <input asp-for="Comment" class="form-control" />
+            }
+            else
+            {
+                <input asp-for="Comment" class="form-control" readonly/>
+            }
+
         </div>
         <div class="form-group">
             <label asp-for="Status" class="control-label"></label>
             <input asp-for="Status" class="form-control" readonly />
         </div>
 
-        
+
         <br />
         <br />
         <div class="form-group">
-            <input type="submit" value="ОК" class="btn btn-primary" />
+            <input type="submit" value="Зберегти" class="btn btn-primary" />
         </div>
     </form>
 

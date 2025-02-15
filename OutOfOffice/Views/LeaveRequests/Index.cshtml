@@ -33,15 +33,15 @@
             let activeCancel = '';
              let translatedStatus = '';
             switch (request.Status) {
-                case 'New':
+                case 'Новий':
                     activeCancel = 'active';
                     activeSubmit = 'active';
                     break;
-                case 'Submit':
+                case 'Відправлений':
                     activeCancel = 'active';
                     activeSubmit = 'disabled';
                     break;
-                case 'Cancel':
+                case 'Скасований':
                     activeCancel = 'disabled';
                     activeSubmit = 'disabled';
                     break;
@@ -82,7 +82,7 @@
 
                 for (let i = 0; i < requests.length; i++) {
                     if (requests[i].ID === id) {
-                        requests[i].Status = "Submit";
+                        requests[i].Status = "Відправлений";
                         break;
                     }
                 }
@@ -108,7 +108,7 @@
             .then(data => {
                 for (let i = 0; i < requests.length; i++) {
                     if (requests[i].ID === id) {
-                        requests[i].Status = "Cancel";
+                        requests[i].Status = "Скасований";
                         break;
                     }
                 }
