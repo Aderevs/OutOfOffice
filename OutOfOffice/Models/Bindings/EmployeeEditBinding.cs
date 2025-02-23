@@ -51,6 +51,10 @@ namespace OutOfOffice.Models.Bindings
         [Required]
         [Display(Name = "Баланс неробочих днів")]
         public int OutOfOfficeBalance { get; set; }
+        
+        [Required]
+        [Display(Name = "Баланс лікарняних")]
+        public int SickLeaveBalance { get; set; }
 
         [Display(Name = "HR")]
         [RequiredIfOptionsNotNull]

@@ -95,8 +95,17 @@ namespace OutOfOffice.Controllers
                     requestDb.Status = DbLogic.ApprovalRequestStatus.Approved;
                     if (!otherApprovals.Any(request => request.Status != DbLogic.ApprovalRequestStatus.Approved))
                     {
-                        var leaveDuration = (requestDb.LeaveRequest.EndDate.ToDateTime(new TimeOnly()) - requestDb.LeaveRequest.StartDate.ToDateTime(new TimeOnly())).Days;
-                        employeeDb.OutOfOfficeBalance -= leaveDuration;
+                        var leaveDuration = CalculateLeaveDuration(requestDb.LeaveRequest.StartDate, requestDb.LeaveRequest.EndDate);
+                        
+                        if (requestDb.LeaveRequest.AbsenceReason == DbLogic.AbsenceReason.Disease)
+                        {
+                            employeeDb.SickLeaveBalance -= leaveDuration;
+                        }
+                        else
+                        {
+                            employeeDb.OutOfOfficeBalance -= leaveDuration;
+                        }
+                        
                         await _employeesRepository.UpdateAsync(employeeDb);
                     }
 
@@ -143,8 +152,17 @@ namespace OutOfOffice.Controllers
                     await _approvalRequestsRepository.UpdateAsync(requestDb);
                     if (!otherApprovals.Any(request => request.Status != DbLogic.ApprovalRequestStatus.Approved))
                     {
-                        var leaveDuration = (requestDb.LeaveRequest.EndDate.ToDateTime(new TimeOnly()) - requestDb.LeaveRequest.StartDate.ToDateTime(new TimeOnly())).Days;
-                        employeeDb.OutOfOfficeBalance -= leaveDuration;
+                        var leaveDuration = CalculateLeaveDuration(requestDb.LeaveRequest.StartDate, requestDb.LeaveRequest.EndDate);
+                        
+                        if(requestDb.LeaveRequest.AbsenceReason == DbLogic.AbsenceReason.Disease)
+                        {
+                            employeeDb.SickLeaveBalance -= leaveDuration;
+                        }
+                        else
+                        {
+                            employeeDb.OutOfOfficeBalance -= leaveDuration;
+                        }
+                        
                         await _employeesRepository.UpdateAsync(employeeDb);
                     }
                     transaction.Complete();
@@ -182,6 +200,22 @@ namespace OutOfOffice.Controllers
             requestDb.Comment = model.Comment;
             await _approvalRequestsRepository.UpdateAsync(requestDb);
             return RedirectToAction("Index");
+        }
+
+        private int CalculateLeaveDuration(DateOnly start, DateOnly end)
+        {
+            if (start > end)
+                throw new ArgumentException("Start date must be earlier than or equal to end date.");
+
+            int workdays = 0;
+            for (var date = start; date <= end; date = date.AddDays(1))
+            {
+                if (date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    workdays++;
+                }
+            }
+            return workdays;
         }
     }
 }

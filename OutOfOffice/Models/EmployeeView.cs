@@ -17,6 +17,7 @@ namespace OutOfOffice.Models
         public bool IsActive { get; set; }
         public EmployeeView? PeoplePartner { get; set; }
         public int OutOfOfficeBalance { get; set; }
+        public int SickLeaveBalance { get; set; }
         public byte[]? Photo { get; set; }
         public List<LeaveRequestView>? LeaveRequests { get; set; }
         public List<ApprovalRequestView>? Approvals { get; set; }

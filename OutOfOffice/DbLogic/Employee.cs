@@ -67,6 +67,7 @@ namespace OutOfOffice.DbLogic
         public int? PeoplePartnerId { get; set; }
         public Employee? PeoplePartner { get; set; }
         public int OutOfOfficeBalance { get; set; }
+        public int SickLeaveBalance { get; set; }
         public byte[]? Photo { get; set; }
         public List<LeaveRequest>? LeaveRequests { get; set; }
         public List<ApprovalRequest>? Approvals { get; set; }

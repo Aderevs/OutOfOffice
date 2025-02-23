@@ -15,6 +15,7 @@ CREATE TABLE Employees(
 	  IsActive BIT NOT NULL,
 	  PeoplePartnerId INT NULL FOREIGN KEY REFERENCES Employees(ID),
 	  OutOfOfficeBalance INT NOT NULL,
+	  SickLeaveBalance INT NOT NULL,
 	  Photo VARBINARY(MAX) NULL
 );
 GO

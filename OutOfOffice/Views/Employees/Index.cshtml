@@ -15,7 +15,8 @@
             <th><button class="btn" onclick="sortBySubdivision()">Підрозділ</button></th>
             <th><button class="btn" onclick="sortByPosition()">Позиція</button></th>
             <th><button class="btn" onclick="sortByActiveStatus()">Активний</button></th>
-            <th><button class="btn" onclick="sortByBalance()">Баланс відсутності</button></th>
+            <th><button class="btn" onclick="sortByAncenseBalance()">Баланс відсутності</button></th>
+            <th><button class="btn" onclick="sortBySickBalance()">Баланс лікарняних</button></th>
         </tr>
     </thead>
     <tbody id="employees-table-body"></tbody>
@@ -50,6 +51,7 @@
 
                     </td>
                     <td>${employee.OutOfOfficeBalance}</td>
+                    <td>${employee.SickLeaveBalance}</td>
                     <td><a href="https://localhost:7129/Employees/Edit?id=${employee.ID}">Деталі / Редагувати</a></td>`;
             tableBody.appendChild(row);
         });
@@ -112,13 +114,24 @@
         displayTableBody();
     }
 
-    function sortByBalance() {
-        if (currentSorting === "BalanceAscending") {
-            currentSorting = "BalanceDescending";
+    function sortByAncenseBalance() {
+        if (currentSorting === "AncenseBalanceAscending") {
+            currentSorting = "AncenseBalanceDescending";
             employees.reverse();
         } else {
-            currentSorting = "BalanceAscending";
+            currentSorting = "AncenseBalanceAscending";
             employees.sort((a, b) => a.OutOfOfficeBalance - b.OutOfOfficeBalance);
+        }
+        displayTableBody();
+    }
+
+    function sortBySickBalance() {
+        if (currentSorting === "SickBalanceAscending") {
+            currentSorting = "SickBalanceDescending";
+            employees.reverse();
+        } else {
+            currentSorting = "SickBalanceAscending";
+            employees.sort((a, b) => a.SickLeaveBalance - b.SickLeaveBalance);
         }
         displayTableBody();
     }
