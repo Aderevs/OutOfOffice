@@ -29,19 +29,20 @@
         tableBody.innerHTML = "";
         requests.forEach(function (request) {
             let row = document.createElement("tr");
-            let translatedStatus = '';
-            switch (request.Status) {
-                case 'New':
-                    translatedStatus = 'Новий';
-                    break;
-                case 'Submit':
-                    translatedStatus = 'Затверджений';
-                    break;
-                case 'Cancel':
-                    translatedStatus = 'Відхилений';
-                    break;
-                default:
-                    break;
+            //let translatedStatus = '';
+            // switch (request.Status) {
+            //     case 'New':
+            //         translatedStatus = 'Новий';
+            //         break;
+            //     case 'Submit':
+            //         translatedStatus = 'Затверджений';
+            //         break;
+            //     case 'Cancel':
+            //         translatedStatus = 'Відхилений';
+            //         break;
+            //     default:
+            //         break;
+            // }
 
             row.innerHTML =
                 `<td>${request.ID}</td>
@@ -50,7 +51,7 @@
                     <td>${request.StartDate}</td>
                     <td>${request.EndDate}</td>
                     <td>${request.ApproverName}</td>
-                    <td>${translatedStatus}</td>
+                    <td>${request.Status}</td>
                             <td><a href="https://localhost:7129/ApprovalRequests/ApprovalToMyLeaveRequest?id=${request.ID}">Деталі</a></td>`;
             tableBody.appendChild(row);
         });

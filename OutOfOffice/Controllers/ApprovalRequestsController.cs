@@ -82,7 +82,9 @@ namespace OutOfOffice.Controllers
                 throw new InvalidOperationException("No employee that has leave request with id such as in approval request was found");
             }
 
-            using (var transaction = new TransactionScope())
+            var otherApprovals = await _approvalRequestsRepository.GetAllByLeaveIdIncludeLeaveAsync(requestDb.LeaveRequestId);
+            otherApprovals = otherApprovals.Where(request => request.ID != model.ID).ToList();
+            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
@@ -91,11 +93,14 @@ namespace OutOfOffice.Controllers
                         requestDb.Comment = model.Comment;
                     }
                     requestDb.Status = DbLogic.ApprovalRequestStatus.Approved;
-                    var leaveDuration = (requestDb.LeaveRequest.EndDate.ToDateTime(new TimeOnly()) - requestDb.LeaveRequest.StartDate.ToDateTime(new TimeOnly())).Days;
-                    employeeDb.OutOfOfficeBalance -= leaveDuration;
+                    if (!otherApprovals.Any(request => request.Status != DbLogic.ApprovalRequestStatus.Approved))
+                    {
+                        var leaveDuration = (requestDb.LeaveRequest.EndDate.ToDateTime(new TimeOnly()) - requestDb.LeaveRequest.StartDate.ToDateTime(new TimeOnly())).Days;
+                        employeeDb.OutOfOfficeBalance -= leaveDuration;
+                        await _employeesRepository.UpdateAsync(employeeDb);
+                    }
 
                     await _approvalRequestsRepository.UpdateAsync(requestDb);
-                    await _employeesRepository.UpdateAsync(employeeDb);
                     transaction.Complete();
                     return RedirectToAction("Index");
                 }
@@ -128,16 +133,20 @@ namespace OutOfOffice.Controllers
                 throw new InvalidOperationException("No employee that has leave request with id such as in approval request was found");
             }
 
-            using (var transaction = new TransactionScope())
+            var otherApprovals = await _approvalRequestsRepository.GetAllByLeaveIdIncludeLeaveAsync(requestDb.LeaveRequestId);
+            otherApprovals = otherApprovals.Where(request => request.ID != id).ToList();
+            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
                     requestDb.Status = DbLogic.ApprovalRequestStatus.Approved;
-                    var leaveDuration = (requestDb.LeaveRequest.EndDate.ToDateTime(new TimeOnly()) - requestDb.LeaveRequest.StartDate.ToDateTime(new TimeOnly())).Days;
-                    employeeDb.OutOfOfficeBalance -= leaveDuration;
-
                     await _approvalRequestsRepository.UpdateAsync(requestDb);
-                    await _employeesRepository.UpdateAsync(employeeDb);
+                    if (!otherApprovals.Any(request => request.Status != DbLogic.ApprovalRequestStatus.Approved))
+                    {
+                        var leaveDuration = (requestDb.LeaveRequest.EndDate.ToDateTime(new TimeOnly()) - requestDb.LeaveRequest.StartDate.ToDateTime(new TimeOnly())).Days;
+                        employeeDb.OutOfOfficeBalance -= leaveDuration;
+                        await _employeesRepository.UpdateAsync(employeeDb);
+                    }
                     transaction.Complete();
                     return RedirectToAction("Index");
                 }

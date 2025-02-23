@@ -31,18 +31,15 @@
             let row = document.createElement("tr");
             let activeSubmit = '';
             //let activeCancel = '';
-            ..let translatedStatus = '';
+            //let translatedStatus = '';
             switch (request.Status) {
-                case 'New':
-                    activeCancel = 'active';
+                case 'Новий':
                     activeSubmit = 'active';
                     break;
-                case 'Submit':
-                    activeCancel = 'active';
+                case 'Відправлений':
                     activeSubmit = 'disabled';
                     break;
-                case 'Cancel':
-                    activeCancel = 'disabled';
+                case 'Відхилений':
                     activeSubmit = 'disabled';
                     break;
                 default:
@@ -82,7 +79,7 @@
 
                 for (let i = 0; i < requests.length; i++) {
                     if (requests[i].ID === id) {
-                        requests[i].Status = "Submit";
+                        requests[i].Status = "Відправлений";
                         break;
                     }
                 }

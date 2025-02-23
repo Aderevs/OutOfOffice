@@ -54,6 +54,13 @@ namespace OutOfOffice.DbLogic.Repositories
                 .FirstOrDefaultAsync(approval => approval.ID == approvalId);
 #pragma warning restore CS8603 // Possible null reference return.
         }
+        public async Task<IEnumerable<ApprovalRequest>> GetAllByLeaveIdIncludeLeaveAsync(int leaveId)
+        {
+            return await _context.ApprovalRequests
+                .Include(request => request.LeaveRequest)
+                .Where(approval => approval.LeaveRequestId == leaveId)
+                .ToListAsync();
+        }
         public async Task<ApprovalRequest> GetByIdOrDefaultAsync(int id)
         {
 #pragma warning disable CS8603 // Possible null reference return.
@@ -105,6 +112,5 @@ namespace OutOfOffice.DbLogic.Repositories
             _context.ApprovalRequests.Update(request);
             await _context.SaveChangesAsync();
         }
-
     }
 }

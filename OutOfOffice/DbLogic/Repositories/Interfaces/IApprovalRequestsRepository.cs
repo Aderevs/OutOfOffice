@@ -10,6 +10,7 @@
         Task<ApprovalRequest> GetByIdIncludeLeaveAndEmployeeAsync(int approvalId);
         Task<ApprovalRequest> GetByIdIncludeLeaveAndApproverAsync(int approvalId);
         Task<ApprovalRequest> GetByIdIncludeLeaveOrDefaultAsync(int approvalId);
+        Task<IEnumerable<ApprovalRequest>> GetAllByLeaveIdIncludeLeaveAsync(int leaveId);
         Task<ApprovalRequest> GetByIdOrDefaultAsync(int id);
         Task UpdateAsync(ApprovalRequest request);
     }
