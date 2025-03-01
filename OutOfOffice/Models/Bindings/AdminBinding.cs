@@ -23,7 +23,7 @@ namespace OutOfOffice.Models.Bindings
         public string PasswordConfirm { get; set; }
 
         [BindProperty]
-        [Display(Name = "Оновити фото:")]
+        [Display(Name = "Фото")]
         [AllowedExtensions(new string[] { ".jpg", ".jpeg" })]
         public IFormFile? Photo { get; set; }
     }

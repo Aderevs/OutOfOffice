@@ -41,7 +41,7 @@ namespace OutOfOffice.Models.Bindings
         
         [Required]
         [Display(Name = "Баланс лікарняних")]
-        public int SickLeaveBalance { get; set; } = 20;
+        public int SickLeaveBalance { get; set; } = 10;
 
         [Display(Name = "HR")]
         [RequiredIfOptionsNotNull]
@@ -49,6 +49,7 @@ namespace OutOfOffice.Models.Bindings
         public List<SelectListItem>? Options { get; set; }
 
         [BindProperty]
+        [Display(Name = "Фото")]
         [AllowedExtensions(new string[] { ".jpg", ".jpeg" })]
         public IFormFile? Photo { get; set; }
 

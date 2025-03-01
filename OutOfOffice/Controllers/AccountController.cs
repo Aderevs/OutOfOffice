@@ -69,6 +69,7 @@ namespace OutOfOffice.Controllers
                     Position = Position.Administrator,
                     IsActive = true,
                     OutOfOfficeBalance = 20,
+                    SickLeaveBalance = 10
                 };
                 if (model.Photo != null)
                 {
