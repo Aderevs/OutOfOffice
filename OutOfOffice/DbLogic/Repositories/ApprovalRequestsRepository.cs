@@ -67,6 +67,14 @@ namespace OutOfOffice.DbLogic.Repositories
             return await _context.ApprovalRequests.FindAsync(id);
 #pragma warning restore CS8603 // Possible null reference return.
         }
+        public async Task<IEnumerable<ApprovalRequest>> GetAllApprovedByEmployeeId(int employeeId)
+        {
+            return await _context.ApprovalRequests
+                .Include(ar => ar.LeaveRequest)
+                .Where(ar => ar.LeaveRequest.EmployeeId == employeeId && ar.Status == ApprovalRequestStatus.Approved)
+                .ToListAsync();
+                
+        }
         public async Task AddAsync(ApprovalRequest request)
         {
             if (request == null)

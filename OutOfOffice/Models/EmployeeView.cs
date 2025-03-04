@@ -4,6 +4,12 @@ using System.Text.Json.Serialization;
 
 namespace OutOfOffice.Models
 {
+    public enum AbsenceState
+    {
+        Present,
+        Absent,
+        Sick,
+    }
     public class EmployeeView
     {
         public int ID { get; init; }
@@ -21,5 +27,6 @@ namespace OutOfOffice.Models
         public byte[]? Photo { get; set; }
         public List<LeaveRequestView>? LeaveRequests { get; set; }
         public List<ApprovalRequestView>? Approvals { get; set; }
+        public AbsenceState Absence { get; set; } = AbsenceState.Present;
     }
 }

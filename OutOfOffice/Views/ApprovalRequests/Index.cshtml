@@ -36,7 +36,7 @@
                 case 'Новий':
                     activeSubmit = 'active';
                     break;
-                case 'Відправлений':
+                case 'Погоджений':
                     activeSubmit = 'disabled';
                     break;
                 case 'Відхилений':
@@ -79,7 +79,7 @@
 
                 for (let i = 0; i < requests.length; i++) {
                     if (requests[i].ID === id) {
-                        requests[i].Status = "Відправлений";
+                        requests[i].Status = "Погоджений";
                         break;
                     }
                 }

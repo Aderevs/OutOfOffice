@@ -16,15 +16,18 @@ namespace OutOfOffice.Controllers
         private readonly IMapper _mapper;
         private readonly IEmployeesRepository _employeesRepository;
         private readonly IProjectsRepository _projectsRepository;
+        private readonly IApprovalRequestsRepository _approvalRequestsRepository;
 
         public EmployeesController(
             IMapper mapper,
             IEmployeesRepository employeesRepository,
-            IProjectsRepository projectsRepository)
+            IProjectsRepository projectsRepository,
+            IApprovalRequestsRepository approvalRequestsRepository)
         {
             _mapper = mapper;
             _employeesRepository = employeesRepository;
             _projectsRepository = projectsRepository;
+            _approvalRequestsRepository = approvalRequestsRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -44,6 +47,7 @@ namespace OutOfOffice.Controllers
                 employeesDb = await _employeesRepository.GetAllAsync();
             }
             var employees = _mapper.Map<List<EmployeeView>>(employeesDb);
+            await SetAbsenceStateToEmployees(employees);
             return View(employees);
         }
 
@@ -188,6 +192,23 @@ namespace OutOfOffice.Controllers
                 throw new InvalidOperationException("employee with such id doesn't have the photo");
             }
             throw new ArgumentException("No employee with such id was found");
+        }
+
+        private async Task SetAbsenceStateToEmployees(IEnumerable<EmployeeView> employees)
+        {
+            foreach (var employee in employees)
+            {
+                var requests = await _approvalRequestsRepository.GetAllApprovedByEmployeeId(employee.ID);
+                var today = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                foreach (var request in requests)
+                {
+                    if (request.LeaveRequest.StartDate <= today && request.LeaveRequest.EndDate >= today)
+                    {
+                        employee.Absence = request.LeaveRequest.AbsenceReason == AbsenceReason.Disease ? AbsenceState.Sick : AbsenceState.Absent;
+                    }
+
+                }
+            }
         }
     }
 }

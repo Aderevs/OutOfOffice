@@ -12,6 +12,7 @@
         Task<ApprovalRequest> GetByIdIncludeLeaveOrDefaultAsync(int approvalId);
         Task<IEnumerable<ApprovalRequest>> GetAllByLeaveIdIncludeLeaveAsync(int leaveId);
         Task<ApprovalRequest> GetByIdOrDefaultAsync(int id);
+        Task<IEnumerable<ApprovalRequest>> GetAllApprovedByEmployeeId(int employeeId);
         Task UpdateAsync(ApprovalRequest request);
     }
 }
