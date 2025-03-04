@@ -125,6 +125,9 @@ namespace OutOfOffice.Controllers
 
             var employee = await _employeesRepository.GetByIdIncludeHRAndProjectsWithManagersAsync(requestDb.EmployeeId);
             var projectManagers = employee.Projects
+                .Where(project => 
+                    requestDb.StartDate >= project.StartDate && requestDb.StartDate <= project.EndDate ||
+                    requestDb.EndDate >= project.StartDate && requestDb.EndDate <= project.EndDate)
                 .Select(project => project.ProjectManager)
                 .Distinct()
                 .ToList();
