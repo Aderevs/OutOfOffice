@@ -36,7 +36,7 @@ namespace OutOfOffice.Models
         public int LeaveID { get; set; }
 
         [Display(Name = "Статус")]
-        [JsonConverter(typeof(EnumNameConverter<LeaveRequestStatus>))]
+        [JsonConverter(typeof(EnumNameConverter<ApprovalRequestStatus>))]
         public ApprovalRequestStatus Status { get; set; }
 
         [Display(Name = "Коментар апрувера")]

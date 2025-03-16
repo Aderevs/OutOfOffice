@@ -27,7 +27,7 @@ namespace OutOfOffice
         public override void Write(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
         {
             var field = value.GetType().GetField(value.ToString());
-            var translatedValue = field?.GetCustomAttribute<DisplayJsonAttribute>().GetValue();
+            var translatedValue = field?.GetCustomAttribute<DisplayJsonAttribute>()?.GetValue() ?? value.ToString();
             writer.WriteStringValue(translatedValue);
         }
     }

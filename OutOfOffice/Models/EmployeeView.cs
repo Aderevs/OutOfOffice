@@ -27,6 +27,7 @@ namespace OutOfOffice.Models
         public byte[]? Photo { get; set; }
         public List<LeaveRequestView>? LeaveRequests { get; set; }
         public List<ApprovalRequestView>? Approvals { get; set; }
+        [JsonConverter(typeof(EnumNameConverter<AbsenceState>))]
         public AbsenceState Absence { get; set; } = AbsenceState.Present;
     }
 }

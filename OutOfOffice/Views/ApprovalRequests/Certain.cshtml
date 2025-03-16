@@ -46,7 +46,7 @@
         <br />
         <br />
         <div class="form-group">
-            @if (Model.Status == OutOfOffice.DbLogic.LeaveRequestStatus.New)
+            @if (Model.Status == OutOfOffice.DbLogic.ApprovalRequestStatus.New)
             {
                 <button type="button" onclick="submitForm('Approve')" class="btn btn-success">Погодити</button>
                 <button type="button" onclick="submitForm('Refuse')" class="btn btn-danger">Відхилити</button>
